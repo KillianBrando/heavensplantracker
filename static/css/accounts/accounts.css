@@ -1,0 +1,113 @@
+/* static/css/accounts.css */
+
+/* Base styling for the card container */
+.card {
+    border-radius: 1rem;
+    background: #fff;
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Full-width buttons with appropriate padding */
+.btn {
+    border-radius: 5px;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+}
+
+/* Label and input field styling */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+input[type="text"],
+input[type="password"] {
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    width: 100%;
+}
+
+/* Adjustments for min-height on full-screen containers */
+.min-vh-100 {
+    min-height: 100vh;
+    padding: 1rem; /* Adds padding for mobile screens */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Validation feedback styling */
+.was-validated .form-control:invalid {
+    border-color: #dc3545;
+}
+.was-validated .form-control:valid {
+    border-color: #28a745;
+}
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+}
+
+/* Animations for smooth appearance */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+.animate-btn {
+    transition: transform 0.2s ease-in-out;
+}
+.animate-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Keyframes for fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Media Queries for Responsiveness */
+
+/* Small screens (phones) */
+@media (max-width: 576px) {
+    .card {
+        padding: 1.5rem;
+        max-width: 90%;
+    }
+    label, input[type="text"], input[type="password"], .btn {
+        font-size: 0.9rem;
+    }
+    .animate-btn:hover {
+        transform: scale(1.02); /* Reduce scale effect on smaller screens */
+    }
+}
+
+/* Medium screens (small tablets) */
+@media (min-width: 577px) and (max-width: 768px) {
+    .card {
+        padding: 2rem;
+        max-width: 80%;
+    }
+    label, input[type="text"], input[type="password"], .btn {
+        font-size: 1rem;
+    }
+}
+
+/* Large screens (desktops) */
+@media (min-width: 769px) {
+    .card {
+        max-width: 400px;
+    }
+}
