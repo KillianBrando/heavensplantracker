@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% block title %}Budget Settings{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Heading -->
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-6 fw-bold text-primary">Set Your Budget Limits</h2>
+            <p class="text-muted">Manage and customize your budget limits for different categories.</p>
+        </div>
+    </div>
+
+    <!-- Budget Form (Card) -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="card shadow-sm p-4 mb-5">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.category.id_for_label }}" class="form-label fw-bold">Category</label>
+                        {{ form.category }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.limit.id_for_label }}" class="form-label fw-bold">Budget Limit (MMK)</label>
+                        {{ form.limit }}
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Save Budget</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Budgets (Table) -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="fw-bold text-center mb-4">Current Budgets</h3>
+            <div class="card shadow-sm p-4">
+                <div class="table-responsive custom-table"> <!-- Responsive table wrapper -->
+                    <table class="table table-hover table-striped table-bordered text-center align-middle">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Category</th>
+                                <th>Budget Limit (MMK)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for budget in budgets %}
+                            <tr>
+                                <td>{{ budget.category }}</td>
+                                <td>MMK {{ budget.limit|floatformat:2 }}</td>
+                                <td>
+                                    <!-- Edit and Delete buttons with icons -->
+                                    <a href="{% url 'edit_budget' budget.pk %}" class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="{% url 'delete_budget' budget.pk %}" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">No budgets set.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom JavaScript to improve the form submission experience -->
+<script>
+    document.querySelector('form').addEventListener('submit', function () {
+        var button = document.querySelector('button[type="submit"]');
+        button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+        button.disabled = true;
+    });
+</script>
+
+<!-- Styling -->
+<style>
+/* Form Styles */
+.form-label {
+    font-size: 1.1rem;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Table and Custom Scrollbar */
+.custom-table {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #007bff #f1f1f1;
+}
+
+.custom-table::-webkit-scrollbar {
+    height: 8px;
+}
+
+.custom-table::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.custom-table::-webkit-scrollbar-thumb {
+    background-color: #007bff;
+    border-radius: 10px;
+    border: 3px solid transparent;
+}
+
+.table-primary {
+    background-color: #e9f5ff;
+    color: #004085;
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+    color: white;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Card and Heading Styles */
+.card {
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    padding: 1.5rem;
+}
+
+h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    h2 {
+        font-size: 1.75rem;
+    }
+    h3 {
+        font-size: 1.5rem;
+    }
+    .table th, .table td {
+        padding: 0.75rem;
+    }
+}
+</style>
+{% endblock %}

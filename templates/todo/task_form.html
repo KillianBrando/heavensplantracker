@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% block title %}{% if form.instance.pk %}Edit Task{% else %}New Task{% endif %}{% endblock %}
+
+{% block content %}
+{% load form_tags %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h2 class="display-6 text-primary fw-bold">{% if form.instance.pk %}Edit Task{% else %}Create a New Task{% endif %}</h2>
+            <p class="text-muted">Keep track of all your tasks with ease</p>
+        </div>
+    </div>
+
+    <!-- Display messages -->
+    {% if messages %}
+    <div class="alert alert-info">
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Task Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-sm p-4 border-light">
+                <form method="post" class="row g-3">
+                    {% csrf_token %}
+
+                    <!-- Task Title -->
+                    <div class="col-md-6">
+                        <label for="title" class="form-label fw-bold">Task Title</label>
+                        {{ form.title|add_class:"form-control form-control-lg" }}
+                    </div>
+
+                    <!-- Priority -->
+                    <div class="col-md-6">
+                        <label for="priority" class="form-label fw-bold">Priority</label>
+                        {{ form.priority|add_class:"form-select form-select-lg" }}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-md-12">
+                        <label for="description" class="form-label fw-bold">Description</label>
+                        {{ form.description|add_class:"form-control form-control-lg" }}
+                    </div>
+
+                    <!-- Due Date -->
+                    <div class="col-md-6">
+                        <label for="due_date" class="form-label fw-bold">Due Date</label>
+                        {{ form.due_date|add_class:"form-control datepicker form-control-lg" }}
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-md-6">
+                        <label for="status" class="form-label fw-bold">Status</label>
+                        {{ form.status|add_class:"form-select form-select-lg" }}
+                    </div>
+
+                    <!-- Recurring -->
+                    <div class="col-md-6">
+                        <label for="recurring" class="form-label fw-bold">Recurring</label>
+                        {{ form.recurring|add_class:"form-select form-select-lg" }}
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="col-12 d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-save"></i> Save Task
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmation (Optional) -->
+<div class="modal fade" id="saveConfirmation" tabindex="-1" aria-labelledby="saveConfirmationLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="saveConfirmationLabel">Task Saved</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Your task has been saved successfully.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Flatpickr Datepicker -->
+<script>
+    flatpickr(".datepicker", {
+        enableTime: false,
+        dateFormat: "Y-m-d",
+    });
+
+    // Optional: Modal display after form submit
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const modal = new bootstrap.Modal(document.getElementById('saveConfirmation'));
+        modal.show();
+    });
+</script>
+
+<style>
+/* Custom Task Form Styles */
+.card {
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.btn-lg {
+    padding: 12px;
+    font-size: 1.1rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .btn-lg {
+        font-size: 1rem;
+    }
+}
+</style>
+{% endblock %}

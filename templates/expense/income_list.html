@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block title %}Income List{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Heading Section -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 text-center">
+            <h2 class="display-6 fw-bold text-primary">Your Income Records</h2>
+            <p class="text-muted">Track and filter your income records with detailed insights.</p>
+        </div>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-10 col-md-12">
+            <div class="card shadow-sm p-4">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        <input type="date" name="start_date" id="start_date" class="form-control" value="{{ filter_form.start_date.value }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="end_date" class="form-label">End Date</label>
+                        <input type="date" name="end_date" id="end_date" class="form-control" value="{{ filter_form.end_date.value }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="source" class="form-label">Source</label>
+                        <input type="text" name="source" id="source" class="form-control" placeholder="e.g., Salary" value="{{ filter_form.source.value }}">
+                    </div>
+                    <div class="col-12 d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Income -->
+    <div class="row mt-4">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="card shadow-sm p-4 text-center">
+                <h4 class="fw-bold">Total Income</h4>
+                <h2 class="text-success fw-bold">MMK {{ total_income|floatformat:2 }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Income Breakdown by Source -->
+    <div class="row mt-4">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="card shadow-sm p-4">
+                <h4 class="fw-bold text-center">Income Breakdown by Source</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped table-bordered text-center align-middle">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Source</th>
+                                <th>Total Income (MMK)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in income_by_source %}
+                            <tr>
+                                <td>{{ entry.source }}</td>
+                                <td>{{ entry.total_income|floatformat:2 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="2" class="text-center">No income records found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Income Trends Chart -->
+    <div class="row mt-4">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="card shadow-sm p-4">
+                <h4 class="text-center fw-bold">Income Trends Over Time</h4>
+                <canvas id="incomeChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Income Table -->
+    <div class="row mt-4">
+        <div class="col-lg-10 col-md-12 mx-auto">
+            <div class="card shadow-sm p-4">
+                <h4 class="fw-bold">Income Details</h4>
+                <div class="table-responsive custom-table">
+                    <table class="table table-hover table-striped table-bordered text-center align-middle">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount (MMK)</th>
+                                <th>Source</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for income in incomes %}
+                            <tr>
+                                <td>{{ income.date }}</td>
+                                <td>{{ income.amount|floatformat:2 }}</td>
+                                <td>{{ income.source }}</td>
+                                <td>{{ income.description }}</td>
+                                <td>
+                                    <a href="{% url 'edit_income' income.pk %}" class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a href="{% url 'delete_income' income.pk %}" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No income records found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var ctx = document.getElementById('incomeChart').getContext('2d');
+        var incomeChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for entry in income_trends %}
+                    '{{ entry.date }}',
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Total Income (MMK)',
+                    data: [
+                        {% for entry in income_trends %}
+                        {{ entry.total_income }},
+                        {% endfor %}
+                    ],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+<!-- Custom Styles -->
+<style>
+/* Custom Scrollbar for Table */
+.custom-table {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #007bff #f1f1f1;
+}
+
+.custom-table::-webkit-scrollbar {
+    height: 8px;
+}
+
+.custom-table::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.custom-table::-webkit-scrollbar-thumb {
+    background-color: #007bff;
+    border-radius: 10px;
+    border: 3px solid transparent;
+}
+
+/* Button Hover Effects */
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+    color: white;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Card and Table Styling */
+.card {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 2rem;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    padding: 1rem;
+}
+
+.table-primary {
+    background-color: #e9f5ff;
+    color: #004085;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .btn-lg {
+        font-size: 1rem;
+    }
+    .table {
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}

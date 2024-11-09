@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Event{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Heading -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12 text-center">
+            <h1 class="display-6 fw-bold text-primary">Edit Event</h1>
+            <p class="text-muted">Make changes to your event details below.</p>
+        </div>
+    </div>
+
+    <!-- Display Form Errors -->
+    {% if form.errors %}
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="alert alert-danger">
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                    <li><strong>{{ field }}</strong>: {{ errors }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Form Section -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-8 col-md-10 col-sm-12">
+            <div class="card shadow-sm p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Title -->
+                    <div class="form-group mb-3">
+                        <label for="id_title" class="form-label fw-bold">Title</label>
+                        {{ form.title }}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group mb-3">
+                        <label for="id_description" class="form-label fw-bold">Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <!-- Start Time -->
+                    <div class="form-group mb-3">
+                        <label for="id_start_time" class="form-label fw-bold">Start Time</label>
+                        {{ form.start_time }}
+                    </div>
+
+                    <!-- End Time -->
+                    <div class="form-group mb-3">
+                        <label for="id_end_time" class="form-label fw-bold">End Time</label>
+                        {{ form.end_time }}
+                    </div>
+
+                    <!-- Recurring Option -->
+                    <div class="form-group mb-3">
+                        <label for="id_recurring_option" class="form-label fw-bold">Recurring Option</label>
+                        {{ form.recurring_option }}
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Flatpickr for DateTime Picker -->
+<script>
+    flatpickr("#id_start_time, #id_end_time", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+    });
+</script>
+
+<!-- Custom Styles -->
+<style>
+    /* General Page Styling */
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+    }
+
+    .card {
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        padding: 2rem;
+    }
+
+    .form-label {
+        font-size: 1.1rem;
+    }
+
+    .form-control {
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 1.75rem;
+        }
+
+        .card {
+            padding: 1.5rem;
+        }
+
+        .btn-lg {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}

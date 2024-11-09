@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Delete Income{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Confirm Delete</h2>
+    <p>Are you sure you want to delete the income from {{ income.source }} on {{ income.date }}?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm</button>
+        <a href="{% url 'income_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

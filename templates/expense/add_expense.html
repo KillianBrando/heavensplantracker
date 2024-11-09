@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block title %}Add Expense{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <!-- Heading -->
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-6 fw-bold text-primary">Add Expense</h2>
+            <p class="text-muted">Fill out the form below to add a new expense.</p>
+        </div>
+    </div>
+
+    <!-- Display messages -->
+    {% if messages %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                <p>{{ message }}</p>
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Add Expense Form -->
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="card shadow-sm p-4">
+                <form id="expense-form" method="POST">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_date" class="form-label fw-bold">Date</label>
+                        {{ form.date }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_amount" class="form-label fw-bold">Amount</label>
+                        {{ form.amount }}
+                        <small class="text-muted">Amount should be positive.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_category" class="form-label fw-bold">Category</label>
+                        {{ form.category }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_description" class="form-label fw-bold">Description</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg w-100" id="submit-btn">
+                            <i class="fas fa-plus-circle"></i> Add Expense
+                        </button>
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inline JavaScript for button loading state -->
+<script>
+    document.getElementById("expense-form").addEventListener("submit", function() {
+        var submitButton = document.getElementById("submit-btn");
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+        submitButton.disabled = true;
+    });
+</script>
+
+<style>
+/* Custom Styles for Responsiveness and UI Enhancements */
+h2 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 2rem;
+}
+
+.card {
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    padding: 2rem;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-lg {
+    padding: 0.75rem 1.25rem;
+}
+
+.alert {
+    font-size: 1rem;
+}
+
+@media (max-width: 576px) {
+    h2 {
+        font-size: 1.5rem;
+    }
+    .card {
+        padding: 1.5rem;
+    }
+    .form-control, .form-select {
+        font-size: 0.9rem;
+    }
+    .btn-lg {
+        font-size: 1rem;
+    }
+}
+</style>
+{% endblock %}

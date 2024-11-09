@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-0">
+    <!-- Dashboard Header -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <h2 class="display-4 fw-bold text-primary">Analytics Dashboard</h2>
+            <p class="lead text-muted">Track and manage your income, spending, and tasks effortlessly.</p>
+        </div>
+    </div>
+
+    <!-- Filter Form Section -->
+    <div class="row justify-content-center mt-0">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm p-4 border-0">
+                <h5 class="fw-bold text-center text-muted mb-3">Filter Your Analytics</h5>
+                <form method="GET" class="row g-3">
+                    <div class="col-md-5">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+                    </div>
+                    <div class="col-md-5">
+                        <label for="end_date" class="form-label">End Date</label>
+                        <input type="date" class="form-control" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Deadline Warning -->
+    {% if soon_due_tasks %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-warning text-center">
+                <strong>Attention!</strong> You have {{ soon_due_tasks.count }} task(s) due within the next 24 hours!
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Income and Spending Overview -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm text-center p-4 border-0">
+                <h4 class="fw-bold">Total Income</h4>
+                <p class="fs-5 text-success">MMK {{ total_income|floatformat:2 }}</p>
+                <i class="fas fa-wallet fa-2x text-success mt-2"></i>
+            </div>
+        </div>
+        <div class="col-md-6 mt-4 mt-md-0">
+            <div class="card shadow-sm text-center p-4 border-0">
+                <h4 class="fw-bold">Total Spending</h4>
+                <p class="fs-5 text-danger">MMK {{ total_spending|floatformat:2 }}</p>
+                <i class="fas fa-money-bill-wave fa-2x text-danger mt-2"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Summary -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm text-center p-4 border-0">
+                <h4 class="fw-bold">Pending Tasks</h4>
+                <p class="fs-5">{{ pending_tasks }}</p>
+                <i class="fas fa-tasks fa-2x text-warning mt-2"></i>
+            </div>
+        </div>
+        <div class="col-md-6 mt-4 mt-md-0">
+            <div class="card shadow-sm text-center p-4 border-0">
+                <h4 class="fw-bold">Completed Tasks</h4>
+                <p class="fs-5">{{ completed_tasks }}</p>
+                <i class="fas fa-check-circle fa-2x text-success mt-2"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mt-5">
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow-sm p-3 border-0">
+                <h5 class="fw-bold text-center">Task Completion Trends</h5>
+                <canvas id="completionTrendsChart" height="150"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
+            <div class="card shadow-sm p-3 border-0">
+                <h5 class="fw-bold text-center">Spending By Category</h5>
+                <canvas id="spendingByCategoryChart" height="150"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow-sm p-3 border-0">
+                <h5 class="fw-bold text-center">Tasks Per Day</h5>
+                <canvas id="tasksPerDayChart" height="150"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
+            <div class="card shadow-sm p-3 border-0">
+                <h5 class="fw-bold text-center">Tasks Per Week</h5>
+                <canvas id="tasksPerWeekChart" height="150"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Tasks -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card shadow-sm p-4 border-0">
+                <h4 class="fw-bold text-center">Recent Tasks</h4>
+                <ul class="list-group">
+                    {% for task in recent_tasks %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center {% if task.status == 'completed' %}bg-light{% endif %}">
+                        <span>
+                            {{ task.title }}
+                            <span class="badge rounded-pill {% if task.priority == 'high' %}bg-danger{% elif task.priority == 'medium' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                {{ task.get_priority_display }}
+                            </span>
+                            <span class="badge rounded-pill {% if task.status == 'completed' %}bg-success{% else %}bg-primary{% endif %}">
+                                {{ task.get_status_display }}
+                            </span>
+                        </span>
+                        <span>{{ task.due_date }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No recent tasks available.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Average Spending Per Category -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card shadow-sm p-4 border-0">
+                <h4 class="fw-bold text-center">Average Spending Per Category</h4>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Average Spending (MMK)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in avg_spending_per_category %}
+                        <tr>
+                            <td>{{ entry.category }}</td>
+                            <td>{{ entry.avg_amount|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center">No data available for this period.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Inline chart data -->
+<script>
+    var chartData = {
+        onTimeTasks: {{ on_time_tasks }},
+        overdueTasks: {{ overdue_tasks }},
+        dayLabels: [{% for day in tasks_per_day %}'{{ day.day }}',{% endfor %}],
+        dayCounts: [{% for day in tasks_per_day %}{{ day.count }},{% endfor %}],
+        weekLabels: [{% for week in tasks_per_week %}'{{ week.week }}',{% endfor %}],
+        weekCounts: [{% for week in tasks_per_week %}{{ week.count }},{% endfor %}],
+        categoryLabels: [{% for entry in spending_by_category %}'{{ entry.category }}',{% endfor %}],
+        categoryTotals: [{% for entry in spending_by_category %}{{ entry.total }},{% endfor %}]
+    };
+</script>
+{% endblock %}

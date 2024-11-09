@@ -1,0 +1,132 @@
+<!-- templates/accounts/signup.html -->
+{% extends 'base.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4 animate-fade-in" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center mb-4">Create an Account</h2>
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <!-- Password strength indicator -->
+            <div class="mb-3">
+                <label for="password1" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password1" name="password1" required>
+                <div class="form-text" id="passwordStrengthText"></div>
+                <div class="progress mt-2" style="height: 5px;">
+                    <div id="passwordStrengthMeter" class="progress-bar" role="progressbar"></div>
+                </div>
+            </div>
+            <!-- Show/Hide Password toggle -->
+            <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" id="showPasswordSignup">
+                <label class="form-check-label" for="showPasswordSignup">Show Password</label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-3 animate-btn">Sign Up</button>
+        </form>
+        <p class="text-center mt-3">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+    </div>
+</div>
+
+<!-- Custom JavaScript -->
+<script>
+    // Toggle password visibility
+    document.getElementById('showPasswordSignup').addEventListener('change', function() {
+        const passwordField = document.getElementById('password1');
+        passwordField.type = this.checked ? 'text' : 'password';
+    });
+
+    // Password strength validation
+    const passwordInput = document.getElementById('password1');
+    const strengthMeter = document.getElementById('passwordStrengthMeter');
+    const strengthText = document.getElementById('passwordStrengthText');
+
+    passwordInput.addEventListener('input', function() {
+        const strength = checkPasswordStrength(passwordInput.value);
+        updateStrengthMeter(strength);
+    });
+
+    function checkPasswordStrength(password) {
+        let strengthScore = 0;
+
+        if (password.length >= 8) strengthScore += 1;  // Minimum length
+        if (/[A-Z]/.test(password)) strengthScore += 1;  // Uppercase
+        if (/[a-z]/.test(password)) strengthScore += 1;  // Lowercase
+        if (/[0-9]/.test(password)) strengthScore += 1;  // Digit
+        if (/[^A-Za-z0-9]/.test(password)) strengthScore += 1;  // Special character
+
+        return strengthScore;
+    }
+
+    function updateStrengthMeter(strength) {
+        strengthMeter.className = 'progress-bar';
+        strengthMeter.style.width = (strength * 20) + '%';  // Strength from 0% to 100%
+
+        if (strength === 0) {
+            strengthText.innerText = 'Too weak';
+            strengthMeter.classList.add('bg-danger');
+        } else if (strength === 1 || strength === 2) {
+            strengthText.innerText = 'Weak';
+            strengthMeter.classList.add('bg-warning');
+        } else if (strength === 3 || strength === 4) {
+            strengthText.innerText = 'Medium';
+            strengthMeter.classList.add('bg-info');
+        } else if (strength === 5) {
+            strengthText.innerText = 'Strong';
+            strengthMeter.classList.add('bg-success');
+        }
+    }
+
+    // Real-time form validation
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach((form) => {
+            form.addEventListener('submit', (event) => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+<style>.card {
+    border-radius: 1rem;
+    background: #fff;
+}
+.btn {
+    border-radius: 5px;
+}
+.min-vh-100 {
+    min-height: 100vh;
+}
+/* Validation feedback styling */
+.was-validated .form-control:invalid {
+    border-color: #dc3545;
+}
+.was-validated .form-control:valid {
+    border-color: #28a745;
+}
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+}
+/* Animations */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+.animate-btn {
+    transition: transform 0.2s ease-in-out;
+}
+.animate-btn:hover {
+    transform: scale(1.05);
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}</style>
+{% endblock %}

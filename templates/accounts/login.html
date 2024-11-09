@@ -1,0 +1,98 @@
+<!-- templates/accounts/login.html -->
+{% extends 'base.html' %}
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card shadow-lg p-4 animate-fade-in" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center mb-4">Welcome Back</h2>
+        <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <!-- Show/Hide Password toggle -->
+            <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" id="showPasswordLogin">
+                <label class="form-check-label" for="showPasswordLogin">Show Password</label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-3 animate-btn">Log In</button>
+        </form>
+        <p class="text-center mt-3">Don’t have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
+    </div>
+</div>
+
+<!-- Custom JavaScript -->
+<script>
+    // Toggle password visibility
+    document.getElementById('showPasswordLogin').addEventListener('change', function() {
+        const passwordFields = document.querySelectorAll('input[type="password"]');
+        passwordFields.forEach(field => {
+            field.type = this.checked ? 'text' : 'password';
+        });
+    });
+
+    // Real-time form validation with error messages
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.prototype.slice.call(forms).forEach((form) => {
+            form.addEventListener('submit', (event) => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    displayErrorMessages(form);
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+
+        function displayErrorMessages(form) {
+            const invalidFields = form.querySelectorAll(':invalid');
+            invalidFields.forEach((field) => {
+                const errorMessage = field.getAttribute('data-error-message') || 'Please fill out this field.';
+                if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('invalid-feedback')) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.classList.add('invalid-feedback');
+                    errorDiv.innerText = errorMessage;
+                    field.parentNode.insertBefore(errorDiv, field.nextSibling);
+                }
+            });
+        }
+    })();
+</script>
+<style>.card {
+    border-radius: 1rem;
+    background: #fff;
+}
+.btn {
+    border-radius: 5px;
+}
+.min-vh-100 {
+    min-height: 100vh;
+}
+/* Validation feedback styling */
+.was-validated .form-control:invalid {
+    border-color: #dc3545;
+}
+.was-validated .form-control:valid {
+    border-color: #28a745;
+}
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+}
+/* Animations */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+.animate-btn {
+    transition: transform 0.2s ease-in-out;
+}
+.animate-btn:hover {
+    transform: scale(1.05);
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}</style>
+{% endblock %}

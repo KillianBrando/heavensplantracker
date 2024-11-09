@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+{% block title %}Expense Report{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <!-- Heading Section -->
+    <div class="row">
+        <div class="col-12 text-center mb-5">
+            <h2 class="display-6 fw-bold text-primary">Expense Report</h2>
+            <p class="text-muted">Track your spending with detailed insights and data visualization.</p>
+        </div>
+    </div>
+
+    <!-- Filter Form Section -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm p-4">
+                <form method="GET" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="end_date" class="form-label">End Date</label>
+                        <input type="date" class="form-control" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" name="category">
+                            <option value="">All Categories</option>
+                            <option value="Food" {% if category == 'Food' %}selected{% endif %}>Food</option>
+                            <option value="Transport" {% if category == 'Transport' %}selected{% endif %}>Transport</option>
+                            <option value="Utilities" {% if category == 'Utilities' %}selected{% endif %}>Utilities</option>
+                            <option value="Entertainment" {% if category == 'Entertainment' %}selected{% endif %}>Entertainment</option>
+                            <option value="Other" {% if category == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="row">
+        <!-- Spending by Category Chart -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card shadow-sm p-4 h-100">
+                <h5 class="fw-bold text-center">Spending by Category</h5>
+                <div class="chart-container" style="height: 300px; width: 100%;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spending Over Time Chart -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card shadow-sm p-4 h-100">
+                <h5 class="fw-bold text-center">Spending Over Time</h5>
+                <div class="chart-container" style="height: 300px; width: 100%;">
+                    <canvas id="timeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expense Table Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm p-4">
+                <h5 class="fw-bold text-center">Expense List</h5>
+                <div class="table-responsive custom-table"> 
+                    <table class="table table-hover table-striped table-bordered align-middle text-center">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in expenses %}
+                            <tr>
+                                <td>{{ expense.date }}</td>
+                                <td>{{ expense.category }}</td>
+                                <td>MMK {{ expense.amount }}</td>
+                                <td>{{ expense.description }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-id="{{ expense.pk }}" title="Edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteExpenseModal" data-id="{{ expense.pk }}" title="Delete">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center">No expenses found for the selected criteria.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Expense Modal -->
+<div class="modal custom-fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editExpenseModalLabel">Edit Expense</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Content will be loaded dynamically via JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Expense Modal -->
+  <div class="modal custom-fade" id="deleteExpenseModal" tabindex="-1" aria-labelledby="deleteExpenseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteExpenseModalLabel">Delete Expense</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this expense?
+        </div>
+        <div class="modal-footer">
+          <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Chart Initialization -->
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Category Chart
+    var ctx = document.getElementById('categoryChart').getContext('2d');
+    var categoryChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Food', 'Transport', 'Utilities', 'Entertainment', 'Other'],
+            datasets: [{
+                label: 'Spending by Category',
+                data: [
+                    {{ category_totals.Food|floatformat:2 }},
+                    {{ category_totals.Transport|floatformat:2 }},
+                    {{ category_totals.Utilities|floatformat:2 }},
+                    {{ category_totals.Entertainment|floatformat:2 }},
+                    {{ category_totals.Other|floatformat:2 }}
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+            },
+        }
+    });
+
+    // Time Chart
+    var timeCtx = document.getElementById('timeChart').getContext('2d');
+    var timeChart = new Chart(timeCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for entry in daily_expenses %}'{{ entry.day }}',{% endfor %}],
+            datasets: [{
+                label: 'Spending Over Time',
+                data: [{% for entry in daily_expenses %}{{ entry.total|floatformat:2 }},{% endfor %}],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            responsive: true,
+        }
+    });
+  });
+    document.addEventListener("DOMContentLoaded", function() {
+      // Edit Modal
+      var editExpenseModal = document.getElementById('editExpenseModal');
+      editExpenseModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var expenseId = button.getAttribute('data-id');
+  
+        fetch(`{% url 'edit_expense' 0 %}`.replace('0', expenseId))
+          .then(response => response.text())
+          .then(data => {
+            editExpenseModal.querySelector('.modal-body').innerHTML = data;
+          });
+      });
+  
+      // Delete Modal
+      var deleteExpenseModal = document.getElementById('deleteExpenseModal');
+      deleteExpenseModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var expenseId = button.getAttribute('data-id');
+  
+        var form = deleteExpenseModal.querySelector('form');
+        form.action = `{% url 'delete_expense' 0 %}`.replace('0', expenseId);
+      });
+    });
+
+</script>
+
+<!-- Styles -->
+<style>
+/* Table Styles */
+.custom-table {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #007bff #f1f1f1;
+}
+.custom-table::-webkit-scrollbar {
+    height: 8px;
+}
+.custom-table::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.custom-table::-webkit-scrollbar-thumb {
+    background-color: #007bff;
+    border-radius: 10px;
+    border: 3px solid transparent;
+}
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+.table-bordered th, .table-bordered td {
+    border: 1px solid #dee2e6;
+}
+.table-primary {
+    background-color: #e9f5ff;
+}
+.table-primary th {
+    color: #004085;
+    border-color: #cce5ff;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+.table td, .table th {
+    vertical-align: middle;
+    padding: 1rem;
+}
+
+/* Button Hover Effects */
+.btn-outline-primary, .btn-outline-danger {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+}
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+    }
+    .table th, .table td {
+        padding: 0.75rem;
+    }
+
+}
+
+/* Custom modal fade-in animation */
+@keyframes fadeInUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+}
+
+/* Apply the animation when the modal is shown or hidden */
+.modal.custom-fade .modal-dialog {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.modal.custom-fade .modal.fade .modal-dialog {
+  animation: fadeOutDown 0.5s ease forwards;
+}
+</style>
+{% endblock %}

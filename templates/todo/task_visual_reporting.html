@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Task Visual Reporting{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Task Visual Reporting</h2>
+
+    <canvas id="taskPerDayChart"></canvas>
+    <canvas id="taskPerWeekChart"></canvas>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var ctxDay = document.getElementById('taskPerDayChart').getContext('2d');
+        var ctxWeek = document.getElementById('taskPerWeekChart').getContext('2d');
+
+        var taskPerDayChart = new Chart(ctxDay, {
+            type: 'line',
+            data: {
+                labels: [{% for day in tasks_per_day %}'{{ day.day }}',{% endfor %}],
+                datasets: [{
+                    label: 'Tasks Completed Per Day',
+                    data: [{% for day in tasks_per_day %}{{ day.count }},{% endfor %}],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    fill: false
+                }]
+            }
+        });
+
+        var taskPerWeekChart = new Chart(ctxWeek, {
+            type: 'bar',
+            data: {
+                labels: [{% for week in tasks_per_week %}'{{ week.week }}',{% endfor %}],
+                datasets: [{
+                    label: 'Tasks Completed Per Week',
+                    data: [{% for week in tasks_per_week %}{{ week.count }},{% endfor %}],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Event Calendar</h1>
+    <div id="calendar"></div>
+    <div id="loading-spinner" class="spinner-border text-primary" role="status" style="display:none;">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var spinner = document.getElementById('loading-spinner');
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            events: '/timetable/api/events/',  // Load events from API
+
+            // Show loading spinner while events are being fetched
+            loading: function(isLoading) {
+                if (isLoading) {
+                    spinner.style.display = 'inline-block';  // Show spinner
+                } else {
+                    spinner.style.display = 'none';  // Hide spinner
+                }
+            },
+
+            // Event mounting logic to style tasks and regular events
+            eventDidMount: function(info) {
+                if (info.event.extendedProps.is_task) {
+                    info.el.classList.add('task-event');
+                } else {
+                    info.el.classList.add('regular-event');
+                }
+
+                // Tooltip to display event description
+                if (info.event.extendedProps.description) {
+                    var tooltip = new Tooltip(info.el, {
+                        title: info.event.extendedProps.description,
+                        placement: 'top',
+                        trigger: 'hover',
+                        container: 'body'
+                    });
+                }
+            },
+
+            // Calendar options
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            initialView: 'dayGridMonth',
+            navLinks: true,
+            editable: false,
+            dayMaxEvents: true,
+            weekends: true,  // Show weekends
+            nowIndicator: true,  // Highlight current time
+            eventClick: function(info) {
+                alert('Event: ' + info.event.title);  // Display event details on click
+                info.jsEvent.preventDefault();
+            }
+        });
+
+        calendar.render();
+    });
+</script>
+
+<!-- Add CSS styles for tasks and regular events -->
+<style>
+    .task-event {
+        background-color: #ffcccb !important;
+        border-color: #ff6666 !important;
+        color: black !important;
+        font-weight: bold;
+    }
+
+    .regular-event {
+        background-color: #cce5ff !important;
+        border-color: #339af0 !important;
+        color: black !important;
+        font-weight: bold;
+    }
+
+    #loading-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+{% endblock %}
