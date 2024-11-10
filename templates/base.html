@@ -39,7 +39,7 @@
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                 
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Expense Tracker</h5>
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Heaven's Plan Tracker</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
@@ -87,6 +87,11 @@
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'dashboard_view' %}active{% endif %}" href="{% url 'dashboard_view' %}">
                                 <i class="fas fa-chart-line"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'weather:weather' %}active{% endif %}" href="{% url 'weather:weather' %}">
+                                <i class="fas fa-cloud-sun"></i> Weather
                             </a>
                         </li>
                         <li class="nav-item">
