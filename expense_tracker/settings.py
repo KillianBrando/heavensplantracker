@@ -4,7 +4,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-l)ki7&l*noe8%bm+r-1v5vx$!e+a1dit+#k)3*x$(16%s16nkv'
-
+OPENWEATHER_API_KEY = "2a4503471f4488f265ca7078892b23d8"
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     'expense',
     'todo',
     'timetable',
+    'weather',
 ]
 
 MIDDLEWARE = [

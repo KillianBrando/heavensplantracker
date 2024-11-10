@@ -9,4 +9,5 @@ urlpatterns = [
     path('todo/', include('todo.urls')),
     path('timetable/', include('timetable.urls')),
     path('', include('dashboard.urls')),
+    path('weather/', include('weather.urls')),
 ]

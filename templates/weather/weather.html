@@ -1,0 +1,49 @@
+<!-- weather/templates/weather/weather.html -->
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="weather-app" style="background-color: {% if weather_data.weather.0.main == 'Clear' %} #87CEEB
+                               {% elif weather_data.weather.0.main == 'Clouds' %} #d3d3d3
+                               {% elif weather_data.weather.0.main == 'Rain' %} #778899
+                               {% elif weather_data.weather.0.main == 'Snow' %} #fffafa
+                               {% else %} #f0f8ff {% endif %};">
+    <h2>Weather for {{ city }}</h2>
+    <form method="get">
+        {{ form.city.label_tag }}
+        {{ form.city }}
+        <button type="submit">Change City</button>
+    </form>
+
+    <!-- Toggle between Celsius and Fahrenheit -->
+    <div>
+        <button onclick="toggleUnits('metric')" {% if units_label == '°C' %}disabled{% endif %}>Celsius (°C)</button>
+        <button onclick="toggleUnits('imperial')" {% if units_label == '°F' %}disabled{% endif %}>Fahrenheit (°F)</button>
+    </div>
+
+    {% if weather_data %}
+    <div class="current-weather">
+        <img src="http://openweathermap.org/img/wn/{{ weather_data.weather.0.icon }}@2x.png" alt="{{ weather_data.weather.0.description }}">
+        <h3>{{ weather_data.weather.0.main }}</h3>
+        <p>Temperature: {{ weather_data.main.temp }} {{ units_label }}</p>
+        <p>Humidity: {{ weather_data.main.humidity }} %</p>
+        <p>Wind Speed: {{ weather_data.wind.speed }} m/s</p>
+    </div>
+    {% endif %}
+</div>
+
+{% if forecast_data %}
+<h3>7-Day Forecast</h3>
+<div class="forecast">
+    {% for day in forecast_data %}
+        <div class="forecast-day">
+            <img src="http://openweathermap.org/img/wn/{{ day.weather.0.icon }}@2x.png" alt="{{ day.weather.0.description }}">
+            <p>{{ day.dt | date:"D, d M" }}</p>
+            <p>{{ day.weather.0.main }}</p>
+            <p>Temp: {{ day.temp.day }} {{ units_label }}</p>
+            <p>Humidity: {{ day.humidity }}%</p>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+<script src="{% static 'js/weather/script.js' %}"></script>
+{% endblock %}
