@@ -15,7 +15,6 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/accounts/accounts.css' %}">
     
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -26,121 +25,6 @@
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
 
-    <style>
-        /* General Styling */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-        }
-
-        /* Navbar Styling */
-        .navbar {
-            background-color: #ffffff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar-brand {
-            font-weight: 600;
-            font-size: 1.5rem;
-        }
-
-        .nav-link {
-            font-size: 1rem;
-            font-weight: 500;
-            padding: 0.75rem 1.25rem;
-            transition: background-color 0.3s ease;
-        }
-
-        .nav-link.active {
-            color: #007bff;
-        }
-
-        .nav-link:hover {
-            background-color: #e9f5ff;
-        }
-
-        .navbar-toggler {
-            border-color: transparent;
-        }
-
-        /* Notification Messages (Alerts) */
-        .alert-container {
-            margin-top: 1rem;
-        }
-
-        .alert {
-            font-size: 1rem;
-            font-weight: 400;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Footer Styling */
-        footer {
-            background-color: #ffffff;
-            padding: 1rem 0;
-            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
-            width: 100%;
-        }
-
-        footer p {
-            margin: 0;
-            color: #6c757d;
-        }
-
-        /* Offcanvas Menu */
-        .offcanvas-body {
-            padding-top: 2rem;
-        }
-
-        .offcanvas-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        /* Button Styling */
-        .btn-primary {
-            border: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-        /* Custom Scrollbar for Table */
-        .custom-table {
-            overflow-x: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #007bff #f1f1f1;
-        }
-
-        .custom-table::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .custom-table::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .custom-table::-webkit-scrollbar-thumb {
-            background-color: #007bff;
-            border-radius: 10px;
-            border: 3px solid transparent;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .navbar-brand {
-                font-size: 1.25rem;
-            }
-
-            .nav-link {
-                font-size: 0.875rem;
-            }
-        }
-    </style>
 </head>
 
 <body>
