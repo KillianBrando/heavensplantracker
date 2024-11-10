@@ -1,0 +1,120 @@
+/* Table Styles */
+.custom-table {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #007bff #f1f1f1;
+}
+.custom-table::-webkit-scrollbar {
+    height: 8px;
+}
+.custom-table::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.custom-table::-webkit-scrollbar-thumb {
+    background-color: #007bff;
+    border-radius: 10px;
+    border: 3px solid transparent;
+}
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+.table-bordered th, .table-bordered td {
+    border: 1px solid #dee2e6;
+}
+.table-primary {
+    background-color: #e9f5ff;
+}
+.table-primary th {
+    color: #004085;
+    border-color: #cce5ff;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+.table td, .table th {
+    vertical-align: middle;
+    padding: 1rem;
+}
+
+/* Button Hover Effects */
+.btn-outline-primary, .btn-outline-danger {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+}
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+    }
+    .table th, .table td {
+        padding: 0.75rem;
+    }
+
+}
+
+/* Custom modal fade-in animation */
+@keyframes fadeInUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+}
+
+/* Apply the animation when the modal is shown or hidden */
+.modal.custom-fade .modal-dialog {
+  animation: fadeInUp 0.5s ease forwards;
+}
+
+.modal.custom-fade .modal.fade .modal-dialog {
+  animation: fadeOutDown 0.5s ease forwards;
+}
+/* Align chart containers for consistent height */
+.chart-container {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-table {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #007bff #f1f1f1;
+}
+
+.custom-table::-webkit-scrollbar {
+    height: 8px;
+}
+
+.custom-table::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.custom-table::-webkit-scrollbar-thumb {
+    background-color: #007bff;
+    border-radius: 10px;
+    border: 3px solid transparent;
+}

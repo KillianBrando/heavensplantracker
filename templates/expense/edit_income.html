@@ -1,68 +1,50 @@
-{% extends 'base.html' %}
-{% block title %}Edit Income{% endblock %}
-
 {% block content %}
-<div class="container mt-5">
-    <!-- Heading -->
-    <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-8 col-sm-12 text-center">
-            <h2 class="display-6 fw-bold text-primary">Edit Income</h2>
-            <p class="text-muted">Update the details of your income below.</p>
-        </div>
-    </div>
-
-    <!-- Form Section -->
-    <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-8 col-sm-12">
-            <div class="card shadow-sm p-4">
-                <form method="POST">
-                    {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="{{ form.date.id_for_label }}" class="form-label fw-bold">Date</label>
-                        {{ form.date }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="{{ form.amount.id_for_label }}" class="form-label fw-bold">Amount</label>
-                        {{ form.amount }}
-                        <small class="text-muted">Please enter a positive number.</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="{{ form.source.id_for_label }}" class="form-label fw-bold">Source</label>
-                        {{ form.source }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="{{ form.description.id_for_label }}" class="form-label fw-bold">Description</label>
-                        {{ form.description }}
-                    </div>
-                    <div class="d-grid gap-2 d-md-block">
-                        <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
-                        <a href="{% url 'income_list' %}" class="btn btn-secondary btn-lg">Cancel</a>
-                    </div>
-                </form>
-            </div>
+<div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-body">
+            <form method="POST" action="{% url 'edit_income' income.pk %}">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="mb-3">
+                    <label for="{{ form.date.id_for_label }}" class="form-label">Date</label>
+                    {{ form.date }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.amount.id_for_label }}" class="form-label">Amount</label>
+                    {{ form.amount }}
+                    <small class="text-muted">Please enter a positive number.</small>
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.source.id_for_label }}" class="form-label">Source</label>
+                    {{ form.source }}
+                </div>
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                    {{ form.description }}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<style>
-    /* Form and Page Styling */
-    h2 {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
 
-    .card {
-        border-radius: 10px;
-        border: 1px solid #e0e0e0;
-        padding: 2rem;
+
+<!-- Styles -->
+<style>
+    .modal-lg {
+        max-width: 800px;
     }
 
     .form-label {
         font-size: 1.1rem;
+        font-weight: 500;
     }
 
-    .form-control-lg {
+    .form-control {
         padding: 0.75rem;
         font-size: 1rem;
     }
@@ -86,17 +68,17 @@
         background-color: #5a6268;
     }
 
-    /* Responsive Adjustments */
+    /* Responsive adjustments */
     @media (max-width: 768px) {
-        h2 {
-            font-size: 1.75rem;
+        .modal-dialog {
+            margin: 1.75rem auto;
         }
 
-        .card {
+        .modal-content {
             padding: 1.5rem;
         }
 
-        .btn-lg {
+        .btn {
             width: 100%;
         }
     }

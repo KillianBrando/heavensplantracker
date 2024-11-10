@@ -173,7 +173,7 @@ def edit_income(request, pk):
             return redirect('income_list')
     else:
         form = IncomeForm(instance=income)
-    return render(request, 'expense/edit_income.html', {'form': form})
+    return render(request, 'expense/edit_income.html', {'form': form, 'income': income})
 
 @login_required
 def delete_income(request, pk):
