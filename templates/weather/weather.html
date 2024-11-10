@@ -1,49 +1,62 @@
-<!-- weather/templates/weather/weather.html -->
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="weather-app" style="background-color: {% if weather_data.weather.0.main == 'Clear' %} #87CEEB
-                               {% elif weather_data.weather.0.main == 'Clouds' %} #d3d3d3
-                               {% elif weather_data.weather.0.main == 'Rain' %} #778899
-                               {% elif weather_data.weather.0.main == 'Snow' %} #fffafa
-                               {% else %} #f0f8ff {% endif %};">
-    <h2>Weather for {{ city }}</h2>
-    <form method="get">
-        {{ form.city.label_tag }}
-        {{ form.city }}
-        <button type="submit">Change City</button>
-    </form>
 
-    <!-- Toggle between Celsius and Fahrenheit -->
-    <div>
-        <button onclick="toggleUnits('metric')" {% if units_label == '°C' %}disabled{% endif %}>Celsius (°C)</button>
-        <button onclick="toggleUnits('imperial')" {% if units_label == '°F' %}disabled{% endif %}>Fahrenheit (°F)</button>
-    </div>
+<div class="container mt-5">
+    <div class="weather-app card shadow p-4">
+        
+        <h2 class="mb-4 text-center">Weather for {{ city }}</h2>
+        
+        <!-- Centered City Selection Form -->
+        <form method="get" class="d-flex justify-content-center mb-3">
+            <div class="input-group" style="max-width: 400px;">
+                <input type="text" id="city" name="city" value="{{ city }}" class="form-control border-primary" required placeholder="Enter city" aria-label="City">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary font-weight-bold">Change City</button>
+                </div>
+            </div>
+        </form>
 
-    {% if weather_data %}
-    <div class="current-weather">
-        <img src="http://openweathermap.org/img/wn/{{ weather_data.weather.0.icon }}@2x.png" alt="{{ weather_data.weather.0.description }}">
-        <h3>{{ weather_data.weather.0.main }}</h3>
-        <p>Temperature: {{ weather_data.main.temp }} {{ units_label }}</p>
-        <p>Humidity: {{ weather_data.main.humidity }} %</p>
-        <p>Wind Speed: {{ weather_data.wind.speed }} m/s</p>
-    </div>
-    {% endif %}
-</div>
-
-{% if forecast_data %}
-<h3>7-Day Forecast</h3>
-<div class="forecast">
-    {% for day in forecast_data %}
-        <div class="forecast-day">
-            <img src="http://openweathermap.org/img/wn/{{ day.weather.0.icon }}@2x.png" alt="{{ day.weather.0.description }}">
-            <p>{{ day.dt | date:"D, d M" }}</p>
-            <p>{{ day.weather.0.main }}</p>
-            <p>Temp: {{ day.temp.day }} {{ units_label }}</p>
-            <p>Humidity: {{ day.humidity }}%</p>
+        <!-- Toggle between Celsius and Fahrenheit -->
+        <div class="d-flex justify-content-center mb-3">
+            <button class="btn btn-outline-secondary mr-2" onclick="toggleUnits('metric')" {% if units_label == '°C' %}disabled{% endif %}>Celsius (°C)</button>
+            <button class="btn btn-outline-secondary" onclick="toggleUnits('imperial')" {% if units_label == '°F' %}disabled{% endif %}>Fahrenheit (°F)</button>
         </div>
-    {% endfor %}
+
+        <!-- Loading Indicator -->
+        <div id="loading-indicator" class="text-center" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        {% if weather_data %}
+        <!-- Current weather data -->
+        <div class="current-weather text-center">
+            <img src="http://openweathermap.org/img/wn/{{ weather_data.weather.0.icon }}@2x.png" alt="{{ weather_data.weather.0.description }}" class="img-fluid">
+            <h3 class="my-3">{{ weather_data.weather.0.main }}</h3>
+            <p>Temperature: <strong>{{ weather_data.main.temp }} {{ units_label }}</strong></p>
+            <p>Humidity: <strong>{{ weather_data.main.humidity }} %</strong></p>
+            <p>Wind Speed: <strong>{{ weather_data.wind.speed }} m/s</strong></p>
+        </div>
+
+        <!-- 7-day Forecast -->
+        <div class="forecast mt-4">
+            <h4 class="text-center mb-3">7-Day Forecast</h4>
+            <div class="row justify-content-center">
+                {% for day in forecast_data %}
+                <div class="col-6 col-md-3 text-center mb-3">
+                    <p><strong>{{ day.dt | date:"D, d M" }}</strong></p>
+                    <p>Temp: {{ day.temp.day }} {{ units_label }}</p>
+                    <img src="http://openweathermap.org/img/wn/{{ day.weather.0.icon }}@2x.png" alt="{{ day.weather.0.description }}" class="img-fluid">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <p class="text-center text-muted">No data available for the selected city.</p>
+        {% endif %}
+    </div>
 </div>
-{% endif %}
-<script src="{% static 'js/weather/script.js' %}"></script>
+
 {% endblock %}
