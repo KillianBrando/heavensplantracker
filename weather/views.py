@@ -49,7 +49,7 @@ def weather_view(request):
             
             cache.set(cache_key, {'weather_data': geo_data, 'forecast_data': forecast_data}, timeout=900)
         except requests.exceptions.RequestException:
-            messages.error(request, "Unable to retrieve weather data at this time.")
+           print("Error")
 
     form = CityForm(initial={'city': city})
     return render(request, 'weather/weather.html', {

@@ -11,7 +11,7 @@ from django.db.models.functions import TruncDay, TruncWeek
 from django.conf import settings
 from django.core.cache import cache
 
-def fetch_weather_info(city="Your_City"):
+def fetch_weather_info(city="Yangon"):
     weather_info = {}
     weather_alert = ""
 
@@ -47,6 +47,8 @@ def fetch_weather_info(city="Your_City"):
             weather_alert = "A storm is coming. Avoid travel if possible."
         elif 'clear' in condition:
             weather_alert = "Clear skies ahead. Enjoy your day!"
+        elif 'clouds' in condition:
+            weather_alert = "Cloudy skies ahead. Enjoy your day!"
 
         # Cache the data to reduce API calls
         cache.set(cache_key, {"weather_info": weather_info, "weather_alert": weather_alert}, timeout=600)

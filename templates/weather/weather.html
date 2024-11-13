@@ -2,61 +2,133 @@
 {% load static %}
 {% block content %}
 
-<div class="container mt-5">
-    <div class="weather-app card shadow p-4">
-        
-        <h2 class="mb-4 text-center">Weather for {{ city }}</h2>
-        
-        <!-- Centered City Selection Form -->
-        <form method="get" class="d-flex justify-content-center mb-3">
-            <div class="input-group" style="max-width: 400px;">
-                <input type="text" id="city" name="city" value="{{ city }}" class="form-control border-primary" required placeholder="Enter city" aria-label="City">
-                <div class="input-group-append">
-                    <button type="submit" class="btn btn-primary font-weight-bold">Change City</button>
-                </div>
-            </div>
+<div class="container weather-app mt-5 animate-fade-in">
+    <!-- Search Section -->
+    <div class="search-section text-center mb-5">
+        <h1 class="display-6 fw-bold mb-3">Weather in {{ city|default:"Your City" }}</h1>
+        <form method="get" class="d-flex justify-content-center search-bar">
+            <input type="text" id="city" name="city" class="form-control shadow-none" value="{{ city }}" placeholder="Enter city" aria-label="City" required>
+            <button type="submit" class="btn btn-primary ms-2">Search</button>
         </form>
+    </div>
 
-        <!-- Toggle between Celsius and Fahrenheit -->
-        <div class="d-flex justify-content-center mb-3">
+    <!-- Current Weather Display -->
+    {% if weather_data %}
+    <div class="current-weather card shadow-lg p-5 text-center mb-4">
+        <h2 class="fw-bold">{{ weather_data.weather.0.main }}</h2>
+        
+        <!-- Centered Weather Icon and Temperature -->
+        <div class="d-flex justify-content-center align-items-center mt-3">
+            <img src="http://openweathermap.org/img/wn/{{ weather_data.weather.0.icon }}@4x.png" alt="{{ weather_data.weather.0.description }}" class="weather-icon me-3">
+            <p class="display-4 mb-0">{{ weather_data.main.temp }} {{ units_label }}</p>
+        </div>
+        <p class="text-muted mt-2">{{ weather_data.weather.0.description }}</p>
+
+
+
+           <!-- Toggle between Celsius and Fahrenheit -->
+           {% comment %} <div class="d-flex justify-content-center mb-3">
             <button class="btn btn-outline-secondary mr-2" onclick="toggleUnits('metric')" {% if units_label == '°C' %}disabled{% endif %}>Celsius (°C)</button>
             <button class="btn btn-outline-secondary" onclick="toggleUnits('imperial')" {% if units_label == '°F' %}disabled{% endif %}>Fahrenheit (°F)</button>
-        </div>
+        </div> {% endcomment %}
 
-        <!-- Loading Indicator -->
-        <div id="loading-indicator" class="text-center" style="display: none;">
-            <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Loading...</span>
+        <!-- Weather Details -->
+        <div class="weather-details row mt-4">
+            <div class="col-md-4 mb-3">
+                <p><strong>Humidity:</strong> {{ weather_data.main.humidity }}%</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <p><strong>Wind Speed:</strong> {{ weather_data.wind.speed }} m/s</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <p><strong>Feels Like:</strong> {{ weather_data.main.feels_like }} {{ units_label }}</p>
             </div>
         </div>
-
-        {% if weather_data %}
-        <!-- Current weather data -->
-        <div class="current-weather text-center">
-            <img src="http://openweathermap.org/img/wn/{{ weather_data.weather.0.icon }}@2x.png" alt="{{ weather_data.weather.0.description }}" class="img-fluid">
-            <h3 class="my-3">{{ weather_data.weather.0.main }}</h3>
-            <p>Temperature: <strong>{{ weather_data.main.temp }} {{ units_label }}</strong></p>
-            <p>Humidity: <strong>{{ weather_data.main.humidity }} %</strong></p>
-            <p>Wind Speed: <strong>{{ weather_data.wind.speed }} m/s</strong></p>
-        </div>
-
-        <!-- 7-day Forecast -->
-        <div class="forecast mt-4">
-            <h4 class="text-center mb-3">7-Day Forecast</h4>
-            <div class="row justify-content-center">
-                {% for day in forecast_data %}
-                <div class="col-6 col-md-3 text-center mb-3">
-                    <p><strong>{{ day.dt | date:"D, d M" }}</strong></p>
-                    <p>Temp: {{ day.temp.day }} {{ units_label }}</p>
-                    <img src="http://openweathermap.org/img/wn/{{ day.weather.0.icon }}@2x.png" alt="{{ day.weather.0.description }}" class="img-fluid">
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% else %}
-        <p class="text-center text-muted">No data available for the selected city.</p>
-        {% endif %}
     </div>
+    {% endif %}
 </div>
+
+{% comment %} <script src="{% static 'js/weather/script.js' %}"></script> {% endcomment %}
+
+<style>
+    /* Layout and Design */
+    .weather-app {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .search-section h1 {
+        font-size: 1.8rem;
+    }
+
+    /* Search Bar */
+    .search-bar input[type="text"] {
+        max-width: 400px;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+    }
+
+    /* Current Weather Card */
+    .current-weather {
+        background-color: #f4f6f8;
+        border-radius: 12px;
+    }
+
+    .weather-icon {
+        width: 120px;
+        height: auto;
+    }
+
+    .weather-details {
+        text-align: center;
+        font-size: 1rem;
+    }
+
+    /* 7-Day Forecast Cards */
+    .forecast-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .forecast-day {
+        border-radius: 10px;
+        padding: 15px;
+        max-width: 160px;
+        min-width: 140px;
+        background-color: #f9f9f9;
+        transition: all 0.3s ease;
+    }
+    .forecast-day:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .forecast-icon {
+        width: 60px;
+        height: auto;
+    }
+
+    /* Animations */
+    .animate-fade-in { animation: fadeIn 1s ease forwards; opacity: 0; }
+    .animate-slide-up { animation: slideUp 0.8s ease forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(20px); } to { transform: translateY(0); opacity: 1; } }
+
+    /* Dark Mode */
+    .dark-mode .weather-app, .dark-mode .forecast-day, .dark-mode .current-weather {
+        background-color: #333;
+        color: #e0e0e0;
+    }
+    .dark-mode .search-section {
+        background-color: #121212;
+    }
+    .dark-mode .weather-app {
+        background-color: #121212;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 576px) {
+        .forecast-day { flex: 0 0 100%; }
+    }
+</style>
 
 {% endblock %}
