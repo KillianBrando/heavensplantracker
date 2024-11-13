@@ -1,0 +1,70 @@
+{% if request.resolver_match.url_name == 'expense_list' or request.resolver_match.url_name == 'add_expense' or request.resolver_match.url_name == 'budget_settings' %}
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'expense_list' %}active{% endif %}" href="{% url 'expense_list' %}">
+            <i class="fas fa-money-bill-wave"></i> Expenses
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}" href="{% url 'add_expense' %}">
+            <i class="fas fa-plus-circle"></i> Add Expense
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'budget_settings' %}active{% endif %}" href="{% url 'budget_settings' %}">
+            <i class="fas fa-cogs"></i> Budget Settings
+        </a>
+    </li>
+{% elif request.resolver_match.url_name == 'income_list' or request.resolver_match.url_name == 'add_income' %}
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'income_list' %}active{% endif %}" href="{% url 'income_list' %}">
+            <i class="fas fa-wallet"></i> Income
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'add_income' %}active{% endif %}" href="{% url 'add_income' %}">
+            <i class="fas fa-plus-circle"></i> Add Income
+        </a>
+    </li>
+{% elif request.resolver_match.url_name == 'task_list' or request.resolver_match.url_name == 'task_create' %}
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'task_list' %}active{% endif %}" href="{% url 'task_list' %}">
+            <i class="fas fa-tasks"></i> Task List
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'task_create' %}active{% endif %}" href="{% url 'task_create' %}">
+            <i class="fas fa-plus-circle"></i> Create Task
+        </a>
+    </li>
+{% else %}
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard_view' %}active{% endif %}" href="{% url 'dashboard_view' %}">
+            <i class="fas fa-chart-line"></i> Dashboard
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'weather:weather' %}active{% endif %}" href="{% url 'weather:weather' %}">
+            <i class="fas fa-cloud-sun"></i> Weather
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'expense_list' %}active{% endif %}" href="{% url 'expense_list' %}">
+            <i class="fas fa-money-bill-wave"></i> Expenses
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'task_list' %}active{% endif %}" href="{% url 'task_list' %}">
+            <i class="fas fa-tasks"></i> Task List
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'income_list' %}active{% endif %}" href="{% url 'income_list' %}">
+            <i class="fas fa-wallet"></i> Income
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if request.resolver_match.url_name == 'timetable:event_list' %}active{% endif %}" href="{% url 'timetable:event_list' %}">
+            <i class="fas fa-calendar-alt"></i> Event List
+        </a>
+    </li>
+{% endif %}

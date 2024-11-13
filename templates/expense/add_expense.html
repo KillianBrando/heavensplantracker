@@ -16,7 +16,7 @@
     {% if messages %}
     <div class="row">
         <div class="col-12">
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <div class="alert alert-info alert-dismissible fade show shadow-sm" role="alert">
                 {% for message in messages %}
                 <p>{{ message }}</p>
                 {% endfor %}
@@ -29,29 +29,36 @@
     <!-- Add Expense Form -->
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8 col-sm-12">
-            <div class="card shadow-sm p-4">
+            <div class="card shadow-sm p-4 rounded-3">
                 <form id="expense-form" method="POST">
                     {% csrf_token %}
                     <div class="mb-3">
                         <label for="id_date" class="form-label fw-bold">Date</label>
-                        {{ form.date }}
+                        <input type="date" id="id_date" name="date" class="form-control" required>
                     </div>
                     <div class="mb-3">
                         <label for="id_amount" class="form-label fw-bold">Amount</label>
-                        {{ form.amount }}
+                        <input type="number" id="id_amount" name="amount" class="form-control" min="0" step="0.01" required>
                         <small class="text-muted">Amount should be positive.</small>
                     </div>
                     <div class="mb-3">
                         <label for="id_category" class="form-label fw-bold">Category</label>
-                        {{ form.category }}
+                        <select id="id_category" name="category" class="form-select" required>
+                            <option value="" disabled selected>Select Category</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Utilities">Utilities</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="id_description" class="form-label fw-bold">Description</label>
-                        {{ form.description }}
+                        <textarea id="id_description" name="description" class="form-control" rows="3"></textarea>
                     </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg w-100" id="submit-btn">
-                            <i class="fas fa-plus-circle"></i> Add Expense
+                            <i class="fas fa-plus-circle me-2"></i> Add Expense
                         </button>
                     </div>
                 </form>                
@@ -64,7 +71,7 @@
 <script>
     document.getElementById("expense-form").addEventListener("submit", function() {
         var submitButton = document.getElementById("submit-btn");
-        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Adding...';
         submitButton.disabled = true;
     });
 </script>
@@ -121,6 +128,39 @@ h2 {
     .btn-lg {
         font-size: 1rem;
     }
+}
+
+/* Dark Mode Styling */
+.dark-mode .card {
+    background-color: #333;
+    border-color: #444;
+    color: #e0e0e0;
+}
+
+.dark-mode .form-control, .dark-mode .form-select {
+    background-color: #444;
+    color: #e0e0e0;
+    border-color: #555;
+}
+
+.dark-mode .form-control::placeholder {
+    color: #ccc;
+}
+
+.dark-mode .btn-primary {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+}
+
+.dark-mode .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.dark-mode .alert-info {
+    background-color: #1a1a1a;
+    border-color: #333;
+    color: #e0e0e0;
 }
 </style>
 {% endblock %}

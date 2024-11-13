@@ -2,7 +2,7 @@
 {% block title %}Expense Report{% endblock %}
 {% load static %}
 {% block content %}
-<div class="container mt-5">
+<div id="content-container" class="container mt-5">
     <!-- Heading Section -->
     <div class="row">
         <div class="col-12 text-center mb-5">
@@ -14,7 +14,7 @@
     <!-- Filter Form Section -->
     <div class="row justify-content-center">
         <div class="col-lg-10 col-md-12 mb-4">
-            <div class="card shadow-sm p-4">
+            <div class="card shadow-sm p-4 rounded-3">
                 <form method="GET" class="row g-3">
                     <div class="col-md-3">
                         <label for="start_date" class="form-label">Start Date</label>
@@ -47,9 +47,9 @@
     <div class="row gy-4">
         <!-- Spending by Category Chart -->
         <div class="col-lg-6 col-md-12">
-            <div class="card shadow-sm p-4 h-100">
+            <div class="card shadow-sm p-4 h-100 rounded-3">
                 <h5 class="fw-bold text-center">Spending by Category</h5>
-                <div class="chart-container" style="height: 300px;">
+                <div class="chart-container">
                     <canvas id="categoryChart"></canvas>
                 </div>
             </div>
@@ -57,9 +57,9 @@
 
         <!-- Spending Over Time Chart -->
         <div class="col-lg-6 col-md-12">
-            <div class="card shadow-sm p-4 h-100">
+            <div class="card shadow-sm p-4 h-100 rounded-3">
                 <h5 class="fw-bold text-center">Spending Over Time</h5>
-                <div class="chart-container" style="height: 300px;">
+                <div class="chart-container">
                     <canvas id="timeChart"></canvas>
                 </div>
             </div>
@@ -69,9 +69,9 @@
     <!-- Expense Table Section -->
     <div class="row mt-4">
         <div class="col-12">
-            <div class="card shadow-sm p-4">
+            <div class="card shadow-sm p-4 rounded-3">
                 <h5 class="fw-bold text-center">Expense List</h5>
-                <div class="table-responsive custom-table"> 
+                <div class="table-responsive custom-table">
                     <table class="table table-hover table-striped table-bordered align-middle text-center">
                         <thead class="table-primary">
                             <tr>
@@ -91,10 +91,10 @@
                                 <td>{{ expense.description }}</td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editExpenseModal" data-id="{{ expense.pk }}" title="Edit">
-                                        <i class="fas fa-edit"></i> Edit
+                                        <i class="fas fa-edit"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteExpenseModal" data-id="{{ expense.pk }}" title="Delete">
-                                        <i class="fas fa-trash"></i> Delete
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -111,10 +111,8 @@
     </div>
 </div>
 
-
-
-<!-- Edit Expense Modal -->
-<div class="modal custom-fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
+<!-- Edit and Delete Expense Modals -->
+<div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -122,14 +120,13 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Content will be loaded dynamically via JavaScript -->
+                <!-- Content loaded dynamically via JavaScript -->
             </div>
         </div>
     </div>
 </div>
 
-<!-- Delete Expense Modal -->
-<div class="modal custom-fade" id="deleteExpenseModal" tabindex="-1" aria-labelledby="deleteExpenseModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteExpenseModal" tabindex="-1" aria-labelledby="deleteExpenseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -148,7 +145,7 @@
     </div>
 </div>
 
-<!-- Script for Loading Modal Content -->
+<!-- JavaScript for Modals and Charts -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     var editExpenseModal = document.getElementById('editExpenseModal');
@@ -168,104 +165,119 @@ document.addEventListener("DOMContentLoaded", function() {
         var expenseId = button.getAttribute('data-id');
         deleteExpenseModal.querySelector('form').action = `{% url 'delete_expense' 0 %}`.replace('0', expenseId);
     });
-});
-</script>
 
-<!-- Chart Initialization -->
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Category Chart
-    var ctx = document.getElementById('categoryChart').getContext('2d');
-    var categoryChart = new Chart(ctx, {
+    // Initialize charts
+    var ctxCategory = document.getElementById('categoryChart').getContext('2d');
+    var categoryChart = new Chart(ctxCategory, {
         type: 'pie',
         data: {
             labels: ['Food', 'Transport', 'Utilities', 'Entertainment', 'Other'],
             datasets: [{
                 label: 'Spending by Category',
                 data: [
-                    {{ category_totals.Food|floatformat:2 }},
-                    {{ category_totals.Transport|floatformat:2 }},
-                    {{ category_totals.Utilities|floatformat:2 }},
-                    {{ category_totals.Entertainment|floatformat:2 }},
-                    {{ category_totals.Other|floatformat:2 }}
+                    {{ category_totals.Food|default:0 }},
+                    {{ category_totals.Transport|default:0 }},
+                    {{ category_totals.Utilities|default:0 }},
+                    {{ category_totals.Entertainment|default:0 }},
+                    {{ category_totals.Other|default:0 }}
                 ],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)'
-                ],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
                 borderWidth: 1
             }]
         },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-            },
-        }
+        options: { responsive: true }
     });
 
-    // Time Chart
-    var timeCtx = document.getElementById('timeChart').getContext('2d');
-    var timeChart = new Chart(timeCtx, {
+    var ctxTime = document.getElementById('timeChart').getContext('2d');
+    var timeChart = new Chart(ctxTime, {
         type: 'bar',
         data: {
             labels: [{% for entry in daily_expenses %}'{{ entry.day }}',{% endfor %}],
             datasets: [{
                 label: 'Spending Over Time',
                 data: [{% for entry in daily_expenses %}{{ entry.total|floatformat:2 }},{% endfor %}],
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
+                backgroundColor: '#4BC0C0'
             }]
         },
         options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            responsive: true,
+            scales: { y: { beginAtZero: true } },
+            responsive: true
         }
     });
-  });
-    document.addEventListener("DOMContentLoaded", function() {
-      // Edit Modal
-      var editExpenseModal = document.getElementById('editExpenseModal');
-      editExpenseModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var expenseId = button.getAttribute('data-id');
-  
-        fetch(`{% url 'edit_expense' 0 %}`.replace('0', expenseId))
-          .then(response => response.text())
-          .then(data => {
-            editExpenseModal.querySelector('.modal-body').innerHTML = data;
-          });
-      });
-  
-      // Delete Modal
-      var deleteExpenseModal = document.getElementById('deleteExpenseModal');
-      deleteExpenseModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var expenseId = button.getAttribute('data-id');
-  
-        var form = deleteExpenseModal.querySelector('form');
-        form.action = `{% url 'delete_expense' 0 %}`.replace('0', expenseId);
-      });
-    });
+});
+
+    // Ensure animations play on page load
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("content-container").classList.add("fade-in");
+});
 
 </script>
-<link rel="stylesheet" href="{% static 'css/expense/style.css' %}">
+
+<style>
+    /* Main page fade-in effect */
+    .animate-fade-in {
+        opacity: 0;
+        animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    /* Slide-up effect for each section */
+    .animate-slide-up {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideUp 0.8s ease forwards;
+    }
+
+    /* Animation keyframes */
+    @keyframes fadeIn {
+        to { opacity: 1; }
+    }
+    @keyframes slideUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+.custom-table {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #007bff #f1f1f1;
+}
+.custom-table::-webkit-scrollbar {
+    height: 8px;
+}
+.custom-table::-webkit-scrollbar-thumb {
+    background-color: #007bff;
+    border-radius: 10px;
+}
+.chart-container {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Button Styles */
+.btn-outline-primary, .btn-outline-danger {
+    transition: all 0.3s ease;
+}
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    color: white;
+}
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Dark Mode */
+.dark-mode .card, .dark-mode .custom-table, .dark-mode .modal-content {
+    background-color: #333;
+    color: #e0e0e0;
+}
+.dark-mode .table-primary {
+    background-color: #444;
+}
+
+</style>
 
 {% endblock %}

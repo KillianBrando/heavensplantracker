@@ -3,7 +3,7 @@
 {% block title %}Add Income{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 animate-fade-in">
     <!-- Heading Section -->
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8 col-sm-12 text-center">
@@ -15,10 +15,10 @@
     <!-- Form Section -->
     <div class="row justify-content-center mt-4">
         <div class="col-lg-6 col-md-8 col-sm-12">
-            <div class="card shadow-sm p-4">
-                <form method="POST">
+            <div class="card shadow-sm p-4 rounded-3">
+                <form method="POST" id="incomeForm">
                     {% csrf_token %}
-                    
+
                     <!-- Date -->
                     <div class="mb-3">
                         <label for="id_date" class="form-label fw-bold">Date</label>
@@ -43,9 +43,11 @@
                         {{ form.description }}
                     </div>
 
-                    <!-- Submit Button -->
+                    <!-- Submit Button with loading state -->
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">Save Income</button>
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitButton">
+                            <i class="fas fa-save"></i> Save Income
+                        </button>
                     </div>
                 </form>
             </div>
@@ -53,49 +55,72 @@
     </div>
 </div>
 
+<!-- Inline JavaScript for button loading state -->
+<script>
+    document.getElementById("incomeForm").addEventListener("submit", function() {
+        const submitButton = document.getElementById("submitButton");
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Saving...';
+        submitButton.disabled = true;
+    });
+</script>
+
 <!-- Custom Styles -->
 <style>
-    /* General Page Styling */
-    h2 {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-    }
+    /* General Styling */
+    .animate-fade-in { animation: fadeIn 1s ease-in-out forwards; opacity: 0; }
 
+    /* Animation */
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* Card and Form Styling */
     .card {
         border-radius: 10px;
         border: 1px solid #e0e0e0;
         padding: 2rem;
+        background-color: #ffffff;
     }
-
     .form-label {
         font-size: 1.1rem;
     }
-
     .form-control {
         padding: 0.75rem;
         font-size: 1rem;
+        border-radius: 8px;
     }
 
+    /* Button Styling */
     .btn-primary {
         background-color: #007bff;
         border: none;
-        transition: background-color 0.3s ease;
+        transition: background-color 0.3s ease, transform 0.2s;
     }
-
     .btn-primary:hover {
         background-color: #0056b3;
+        transform: scale(1.02);
     }
 
-    /* Responsive Adjustments */
+    /* Dark Mode Support */
+    .dark-mode .card {
+        background-color: #333;
+        color: #e0e0e0;
+    }
+    .dark-mode .form-control {
+        background-color: #555;
+        color: #e0e0e0;
+        border-color: #666;
+    }
+    .dark-mode .form-label, .dark-mode h2 {
+        color: #f1f1f1;
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
         h2 {
             font-size: 1.75rem;
         }
-
         .card {
             padding: 1.5rem;
         }
-
         .btn-lg {
             width: 100%;
         }

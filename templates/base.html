@@ -24,7 +24,6 @@
     
     <!-- FullCalendar CSS -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
-
 </head>
 
 <body>
@@ -37,7 +36,6 @@
             </button>
 
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-                
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Heaven's Plan Tracker</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -45,84 +43,13 @@
                 <div class="offcanvas-body">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         {% if user.is_authenticated %}
-                        
-                        {% if request.resolver_match.url_name == 'expense_list' or request.resolver_match.url_name == 'add_expense' or request.resolver_match.url_name == 'budget_settings' %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'expense_list' %}active{% endif %}" href="{% url 'expense_list' %}">
-                                <i class="fas fa-money-bill-wave"></i> Expenses
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}" href="{% url 'add_expense' %}">
-                                <i class="fas fa-plus-circle"></i> Add Expense
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'budget_settings' %}active{% endif %}" href="{% url 'budget_settings' %}">
-                                <i class="fas fa-cogs"></i> Budget Settings
-                            </a>
-                        </li>
-                        {% elif request.resolver_match.url_name == 'income_list' or request.resolver_match.url_name == 'add_income' %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'income_list' %}active{% endif %}" href="{% url 'income_list' %}">
-                                <i class="fas fa-wallet"></i> Income
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'add_income' %}active{% endif %}" href="{% url 'add_income' %}">
-                                <i class="fas fa-plus-circle"></i> Add Income
-                            </a>
-                        </li>
-                        {% elif request.resolver_match.url_name == 'task_list' or request.resolver_match.url_name == 'task_create' %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'task_list' %}active{% endif %}" href="{% url 'task_list' %}">
-                                <i class="fas fa-tasks"></i> Task List
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'task_create' %}active{% endif %}" href="{% url 'task_create' %}">
-                                <i class="fas fa-plus-circle"></i> Create Task
-                            </a>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'dashboard_view' %}active{% endif %}" href="{% url 'dashboard_view' %}">
-                                <i class="fas fa-chart-line"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'weather:weather' %}active{% endif %}" href="{% url 'weather:weather' %}">
-                                <i class="fas fa-cloud-sun"></i> Weather
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'expense_list' %}active{% endif %}" href="{% url 'expense_list' %}">
-                                <i class="fas fa-money-bill-wave"></i> Expenses
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'task_list' %}active{% endif %}" href="{% url 'task_list' %}">
-                                <i class="fas fa-tasks"></i> Task List
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'income_list' %}active{% endif %}" href="{% url 'income_list' %}">
-                                <i class="fas fa-wallet"></i> Income
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'timetable:event_list' %}active{% endif %}" href="{% url 'timetable:event_list' %}">
-                                <i class="fas fa-calendar-alt"></i> Event List
-                            </a>
-                        </li>
-                        {% endif %}
-                        {% else %}
+                            {% include 'partials/nav_links.html' %}
                         {% endif %}
                     </ul>
                     
-                    <ul class="navbar-nav ms-auto">
+                    <ul class="navbar-nav ms-auto align-items-center">
                         {% if user.is_authenticated %}
-                        <li class="nav-item">
+                        <li class="nav-item me-2">
                             <button id="themeToggle" onclick="toggleTheme()" class="btn btn-sm btn-outline-primary" aria-label="Toggle Dark Mode">
                                 <i class="fas fa-moon"></i>
                             </button>
@@ -159,14 +86,14 @@
     </div>
 
     <!-- Main Content -->
-    <div class="p-0 m-0">
+    <main class="p-0 m-0">
         {% block content %}{% endblock %}
-    </div>
+    </main>
 
     <!-- Footer -->
     {% comment %} <footer id="footer" class="bg-light py-3 mt-2 shadow-sm">
-        <div class="container text-center">
-            <p id="footertext" class="text-muted">&copy; 2024 Expense Tracker. All Rights Reserved.</p>
+        <div id="footerdiv" class="container text-center">
+            <p id="footertext" class="text-muted">&copy; 2024 Heaven's Plan Tracker. All Rights Reserved.</p>
         </div>
     </footer> {% endcomment %}
 
@@ -184,7 +111,6 @@
     <script src="{% static 'js/accounts/accounts.js' %}"></script>
     
     <!-- Block for page-specific scripts -->
-
     <script>
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
@@ -194,8 +120,9 @@
         }
     </script>
     {% block scripts %}{% endblock %}
-     <!-- Inline CSS for Dark Mode Styles -->
-     <style>
+
+    <!-- Inline CSS for Dark Mode Styles -->
+    <style>
         /* Dark Mode Styles */
         .dark-mode {
             background-color: #121212;
@@ -227,8 +154,8 @@
         }
 
         /* Ensuring Footer Text Color */
-        .dark-mode #footer #footertext {
-            color: #e0e0e0;
+        .dark-mode #footer #footerdiv #footertext {
+            color: white;
         }
     </style>
 </body>
