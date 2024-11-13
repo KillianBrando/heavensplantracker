@@ -1,32 +1,33 @@
 {% extends 'base.html' %}
 {% block title %}Expense Report{% endblock %}
 {% load static %}
+
 {% block content %}
-<div id="content-container" class="container mt-5">
-    <!-- Heading Section -->
-    <div class="row">
-        <div class="col-12 text-center mb-5">
+<div id="content-container" class="container my-5">
+    <!-- Page Header -->
+    <div class="row justify-content-center animate-fade-in">
+        <div class="col-lg-8 text-center">
             <h2 class="display-6 fw-bold text-primary">Expense Report</h2>
-            <p class="text-muted">Track your spending with detailed insights and data visualization.</p>
+            <p class="text-muted">Gain insights into your spending habits with detailed reports and visualizations.</p>
         </div>
     </div>
 
-    <!-- Filter Form Section -->
-    <div class="row justify-content-center">
-        <div class="col-lg-10 col-md-12 mb-4">
-            <div class="card shadow-sm p-4 rounded-3">
-                <form method="GET" class="row g-3">
-                    <div class="col-md-3">
-                        <label for="start_date" class="form-label">Start Date</label>
-                        <input type="date" class="form-control" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+    <!-- Filter Form Section with Elevated Card Style -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-lg p-4 rounded-4 animate-slide-up">
+                <form method="GET" class="row gy-3">
+                    <div class="col-md-4">
+                        <label for="start_date" class="form-label fw-bold">Start Date</label>
+                        <input type="date" class="form-control form-control-lg" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
                     </div>
-                    <div class="col-md-3">
-                        <label for="end_date" class="form-label">End Date</label>
-                        <input type="date" class="form-control" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+                    <div class="col-md-4">
+                        <label for="end_date" class="form-label fw-bold">End Date</label>
+                        <input type="date" class="form-control form-control-lg" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
                     </div>
-                    <div class="col-md-3">
-                        <label for="category" class="form-label">Category</label>
-                        <select class="form-select" name="category">
+                    <div class="col-md-4">
+                        <label for="category" class="form-label fw-bold">Category</label>
+                        <select class="form-select form-select-lg" name="category">
                             <option value="">All Categories</option>
                             <option value="Food" {% if category == 'Food' %}selected{% endif %}>Food</option>
                             <option value="Transport" {% if category == 'Transport' %}selected{% endif %}>Transport</option>
@@ -35,29 +36,26 @@
                             <option value="Other" {% if category == 'Other' %}selected{% endif %}>Other</option>
                         </select>
                     </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    <div class="col-12 text-center mt-3">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">Filter</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Chart Section -->
-    <div class="row gy-4">
-        <!-- Spending by Category Chart -->
+    <!-- Charts Section with Visual Separation -->
+    <div class="row gy-4 mt-5">
         <div class="col-lg-6 col-md-12">
-            <div class="card shadow-sm p-4 h-100 rounded-3">
+            <div class="card shadow-sm p-4 h-100 rounded-4 animate-slide-up">
                 <h5 class="fw-bold text-center">Spending by Category</h5>
                 <div class="chart-container">
                     <canvas id="categoryChart"></canvas>
                 </div>
             </div>
         </div>
-
-        <!-- Spending Over Time Chart -->
         <div class="col-lg-6 col-md-12">
-            <div class="card shadow-sm p-4 h-100 rounded-3">
+            <div class="card shadow-sm p-4 h-100 rounded-4 animate-slide-up">
                 <h5 class="fw-bold text-center">Spending Over Time</h5>
                 <div class="chart-container">
                     <canvas id="timeChart"></canvas>
@@ -66,14 +64,14 @@
         </div>
     </div>
 
-    <!-- Expense Table Section -->
-    <div class="row mt-4">
+    <!-- Expense Table Section with Improved Layout -->
+    <div class="row mt-5">
         <div class="col-12">
-            <div class="card shadow-sm p-4 rounded-3">
-                <h5 class="fw-bold text-center">Expense List</h5>
+            <div class="card shadow-lg p-4 rounded-4 animate-fade-in">
+                <h5 class="fw-bold text-center mb-4">Expense List</h5>
                 <div class="table-responsive custom-table">
-                    <table class="table table-hover table-striped table-bordered align-middle text-center">
-                        <thead class="table-primary">
+                    <table class="table table-hover table-borderless align-middle text-center">
+                        <thead class="table-light">
                             <tr>
                                 <th>Date</th>
                                 <th>Category</th>
@@ -111,7 +109,7 @@
     </div>
 </div>
 
-<!-- Edit and Delete Expense Modals -->
+<!-- Modal for Edit and Delete Expense -->
 <div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -120,7 +118,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Content loaded dynamically via JavaScript -->
+                <!-- Content loaded dynamically -->
             </div>
         </div>
     </div>
@@ -166,30 +164,20 @@ document.addEventListener("DOMContentLoaded", function() {
         deleteExpenseModal.querySelector('form').action = `{% url 'delete_expense' 0 %}`.replace('0', expenseId);
     });
 
-    // Initialize charts
-    var ctxCategory = document.getElementById('categoryChart').getContext('2d');
-    var categoryChart = new Chart(ctxCategory, {
+    // Initialize Charts
+    new Chart(document.getElementById('categoryChart').getContext('2d'), {
         type: 'pie',
         data: {
             labels: ['Food', 'Transport', 'Utilities', 'Entertainment', 'Other'],
             datasets: [{
-                label: 'Spending by Category',
-                data: [
-                    {{ category_totals.Food|default:0 }},
-                    {{ category_totals.Transport|default:0 }},
-                    {{ category_totals.Utilities|default:0 }},
-                    {{ category_totals.Entertainment|default:0 }},
-                    {{ category_totals.Other|default:0 }}
-                ],
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                borderWidth: 1
+                data: [{{ category_totals.Food|default:0 }}, {{ category_totals.Transport|default:0 }}, {{ category_totals.Utilities|default:0 }}, {{ category_totals.Entertainment|default:0 }}, {{ category_totals.Other|default:0 }}],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
             }]
         },
         options: { responsive: true }
     });
 
-    var ctxTime = document.getElementById('timeChart').getContext('2d');
-    var timeChart = new Chart(ctxTime, {
+    new Chart(document.getElementById('timeChart').getContext('2d'), {
         type: 'bar',
         data: {
             labels: [{% for entry in daily_expenses %}'{{ entry.day }}',{% endfor %}],
@@ -199,85 +187,36 @@ document.addEventListener("DOMContentLoaded", function() {
                 backgroundColor: '#4BC0C0'
             }]
         },
-        options: {
-            scales: { y: { beginAtZero: true } },
-            responsive: true
-        }
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
     });
 });
-
-    // Ensure animations play on page load
-document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById("content-container").classList.add("fade-in");
-});
-
 </script>
 
+<!-- Custom Styles -->
 <style>
-    /* Main page fade-in effect */
-    .animate-fade-in {
-        opacity: 0;
-        animation: fadeIn 1s ease-in-out forwards;
+    /* Page Animations */
+    .animate-fade-in { animation: fadeIn 1s ease forwards; opacity: 0; }
+    .animate-slide-up { animation: slideUp 0.8s ease forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(20px); } to { transform: translateY(0); opacity: 1; } }
+
+    /* Dark Mode Styles */
+    .dark-mode .card, .dark-mode .modal-content, .dark-mode .custom-table {
+        background-color: #333;
+        color: #e0e0e0;
     }
+    .dark-mode .table-light { background-color: #444; }
 
-    /* Slide-up effect for each section */
-    .animate-slide-up {
-        opacity: 0;
-        transform: translateY(20px);
-        animation: slideUp 0.8s ease forwards;
+    /* Button Hover Effects */
+    .btn-outline-primary:hover { background-color: #007bff; color: white; }
+    .btn-outline-danger:hover { background-color: #dc3545; color: white; }
+
+    /* Chart container styling */
+    .chart-container { height: 300px; display: flex; align-items: center; justify-content: center; }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .btn-lg { width: 100%; }
     }
-
-    /* Animation keyframes */
-    @keyframes fadeIn {
-        to { opacity: 1; }
-    }
-    @keyframes slideUp {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-.custom-table {
-    overflow-x: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #007bff #f1f1f1;
-}
-.custom-table::-webkit-scrollbar {
-    height: 8px;
-}
-.custom-table::-webkit-scrollbar-thumb {
-    background-color: #007bff;
-    border-radius: 10px;
-}
-.chart-container {
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Button Styles */
-.btn-outline-primary, .btn-outline-danger {
-    transition: all 0.3s ease;
-}
-.btn-outline-primary:hover {
-    background-color: #007bff;
-    color: white;
-}
-.btn-outline-danger:hover {
-    background-color: #dc3545;
-    color: white;
-}
-
-/* Dark Mode */
-.dark-mode .card, .dark-mode .custom-table, .dark-mode .modal-content {
-    background-color: #333;
-    color: #e0e0e0;
-}
-.dark-mode .table-primary {
-    background-color: #444;
-}
-
 </style>
-
 {% endblock %}

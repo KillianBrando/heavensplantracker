@@ -1,22 +1,22 @@
 {% extends 'base.html' %}
-
+{% load form_filters %}
 {% block title %}Create New Event{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <!-- Heading -->
+<div class="container my-5">
+    <!-- Page Header -->
     <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10 col-sm-12 text-center">
+        <div class="col-lg-8 col-md-10 text-center animate-fade-in">
             <h1 class="display-6 fw-bold text-primary">Create New Event</h1>
-            <p class="text-muted">Fill in the details below to create a new event.</p>
+            <p class="text-muted">Fill in the details below to schedule a new event</p>
         </div>
     </div>
 
     <!-- Display Feedback Messages -->
     {% if messages %}
     <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10 col-sm-12">
-            <div class="alert alert-info">
+        <div class="col-lg-8 col-md-10">
+            <div class="alert alert-info shadow-sm animate-slide-up">
                 {% for message in messages %}
                 <p>{{ message }}</p>
                 {% endfor %}
@@ -28,9 +28,9 @@
     <!-- Display Form Errors -->
     {% if form.errors %}
     <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10 col-sm-12">
-            <div class="alert alert-danger">
-                <ul>
+        <div class="col-lg-8 col-md-10">
+            <div class="alert alert-danger shadow-sm animate-slide-up">
+                <ul class="mb-0">
                     {% for field, errors in form.errors.items %}
                     <li><strong>{{ field }}</strong>: {{ errors }}</li>
                     {% endfor %}
@@ -42,44 +42,46 @@
 
     <!-- Form Section -->
     <div class="row justify-content-center mt-4">
-        <div class="col-lg-8 col-md-10 col-sm-12">
-            <div class="card shadow-sm p-4">
+        <div class="col-lg-8 col-md-10">
+            <div class="card p-4 shadow-sm rounded-4">
                 <form method="post">
                     {% csrf_token %}
                     
                     <!-- Title -->
-                    <div class="form-group mb-3">
-                        <label for="id_title" class="form-label fw-bold">Title</label>
+                    <div class="form-group mb-4">
+                        <label for="id_title" class="form-label fw-bold">Event Title</label>
                         {{ form.title }}
                     </div>
 
                     <!-- Description -->
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-4">
                         <label for="id_description" class="form-label fw-bold">Description</label>
                         {{ form.description }}
                     </div>
 
                     <!-- Start Time -->
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-4">
                         <label for="id_start_time" class="form-label fw-bold">Start Time</label>
                         {{ form.start_time }}
                     </div>
 
                     <!-- End Time -->
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-4">
                         <label for="id_end_time" class="form-label fw-bold">End Time</label>
                         {{ form.end_time }}
                     </div>
 
                     <!-- Recurring Option -->
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-4">
                         <label for="id_recurring_option" class="form-label fw-bold">Recurring Option</label>
                         {{ form.recurring_option }}
                     </div>
 
                     <!-- Submit Button -->
                     <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">Create Event</button>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-calendar-check me-2"></i>Create Event
+                        </button>
                     </div>
                 </form>
             </div>
@@ -87,60 +89,105 @@
     </div>
 </div>
 
+
 <!-- Flatpickr for DateTime Picker -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    flatpickr("#id_start_time, #id_end_time", {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
+    document.addEventListener("DOMContentLoaded", function() {
+        flatpickr(".datetimepicker", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            altInput: true,
+            altFormat: "F j, Y - h:i K",
+            minDate: "today"
+        });
     });
 </script>
 
-<!-- Custom Styles -->
+<!-- Custom Styles and Animations -->
 <style>
+    .form-card {
+        border-radius: 12px;
+        background-color: #fff;
+    }
+    .form-label {
+        font-weight: bold;
+    }
+    .datetimepicker {
+        font-size: 1rem;
+    }
     /* General Page Styling */
     h1 {
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
     }
 
-    .card {
-        border-radius: 10px;
-        border: 1px solid #e0e0e0;
+    /* Form Card Styling */
+    .form-card {
         padding: 2rem;
+        border: none;
+        border-radius: 12px;
+        background-color: #fff;
+        transition: box-shadow 0.3s ease, transform 0.2s;
+    }
+    .form-card:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
 
+    /* Form Labels and Input Fields */
     .form-label {
         font-size: 1.1rem;
+        font-weight: 600;
     }
-
-    .form-control {
-        padding: 0.75rem;
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 12px;
         font-size: 1rem;
     }
 
+    /* Button Styling */
     .btn-primary {
         background-color: #007bff;
         border: none;
-        transition: background-color 0.3s ease;
+        font-size: 1.1rem;
+        transition: background-color 0.3s ease, transform 0.2s;
     }
-
     .btn-primary:hover {
         background-color: #0056b3;
+        transform: translateY(-2px);
     }
+
+    /* Dark Mode */
+    .dark-mode .form-card {
+        background-color: #333;
+        color: #e0e0e0;
+        border-color: #444;
+    }
+    .dark-mode .alert-info {
+        background-color: #444;
+        color: #e0e0e0;
+        border-color: #555;
+    }
+    .dark-mode .alert-danger {
+        background-color: #661f1f;
+        color: #fff;
+    }
+    .dark-mode .form-control, .dark-mode .form-select {
+        background-color: #444;
+        color: #e0e0e0;
+        border-color: #555;
+    }
+
+    /* Animations */
+    .animate-fade-in { animation: fadeIn 1s ease forwards; opacity: 0; }
+    .animate-slide-up { animation: slideUp 0.8s ease forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(20px); } to { transform: translateY(0); opacity: 1; } }
 
     /* Responsive Adjustments */
     @media (max-width: 768px) {
-        h1 {
-            font-size: 1.75rem;
-        }
-
-        .card {
-            padding: 1.5rem;
-        }
-
-        .btn-lg {
-            width: 100%;
-        }
+        h1 { font-size: 1.75rem; }
+        .btn-lg { width: 100%; }
     }
 </style>
 {% endblock %}

@@ -6,15 +6,15 @@
 
 <div class="container mt-5">
     <div class="row">
-        <div class="col-12 text-center">
+        <div class="col-12 text-center animate-fade-in">
             <h2 class="display-6 text-primary fw-bold">{% if form.instance.pk %}Edit Task{% else %}Create a New Task{% endif %}</h2>
             <p class="text-muted">Keep track of all your tasks with ease</p>
         </div>
     </div>
 
-    <!-- Display messages -->
+    <!-- Display Messages -->
     {% if messages %}
-    <div class="alert alert-info">
+    <div class="alert alert-info shadow-sm animate-slide-up">
         {% for message in messages %}
         <p>{{ message }}</p>
         {% endfor %}
@@ -22,10 +22,10 @@
     {% endif %}
 
     <!-- Task Form -->
-    <div class="row justify-content-center">
+    <div class="row justify-content-center animate-slide-up">
         <div class="col-lg-8 col-md-10 col-sm-12">
-            <div class="card shadow-sm p-4 border-light">
-                <form method="post" class="row g-3">
+            <div class="card form-card shadow-sm border-light rounded-4">
+                <form method="post" class="row g-4">
                     {% csrf_token %}
 
                     <!-- Task Title -->
@@ -78,7 +78,7 @@
 
 <!-- Modal Confirmation (Optional) -->
 <div class="modal fade" id="saveConfirmation" tabindex="-1" aria-labelledby="saveConfirmationLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="saveConfirmationLabel">Task Saved</h5>
@@ -111,44 +111,61 @@
 </script>
 
 <style>
-/* Custom Task Form Styles */
-.card {
-    border-radius: 10px;
-    border: 1px solid #e0e0e0;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+    /* Custom Form Card Style */
+    .form-card {
+        padding: 30px;
+        border-radius: 12px;
+        transition: box-shadow 0.3s ease;
+    }
+    .form-card:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
 
-label {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1rem;
-}
-
-.form-control, .form-select {
-    border-radius: 8px;
-    padding: 12px;
-}
-
-.btn-lg {
-    padding: 12px;
-    font-size: 1.1rem;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #004085;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .btn-lg {
+    /* Form Label and Input Style */
+    .form-label {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+    }
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 12px;
         font-size: 1rem;
     }
-}
+
+    /* Button Style */
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        font-size: 1.1rem;
+        transition: background-color 0.3s ease, transform 0.2s;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    /* Modal and Dark Mode Styling */
+    .dark-mode .form-card, .dark-mode .modal-content {
+        background-color: #333;
+        color: #e0e0e0;
+        border-color: #444;
+    }
+    .dark-mode .btn-primary {
+        background-color: #0062cc;
+        border-color: #0056b3;
+    }
+
+    /* Animations */
+    .animate-fade-in { animation: fadeIn 1s ease forwards; opacity: 0; }
+    .animate-slide-up { animation: slideUp 0.8s ease forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(20px); } to { transform: translateY(0); opacity: 1; } }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .btn-lg { font-size: 1rem; }
+        .form-control, .form-select { font-size: 0.9rem; padding: 10px; }
+    }
 </style>
 {% endblock %}

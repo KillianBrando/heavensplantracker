@@ -2,19 +2,17 @@
 {% block title %}To-Do List{% endblock %}
 {% block content %}
 <div class="container mt-5">
-    <!-- Heading -->
-    <div class="row">
-        <div class="col-12 text-center mb-4">
-            <h2 class="display-6 fw-bold text-primary">Your Tasks</h2>
-            <p class="text-muted">Manage your tasks with filters and drag-and-drop sorting.</p>
-        </div>
+    <!-- Page Heading -->
+    <div class="text-center mb-4 animate-fade-in">
+        <h2 class="display-6 fw-bold text-primary">Your Tasks</h2>
+        <p class="text-muted">Organize, filter, and manage your tasks with ease.</p>
     </div>
 
     <!-- Display Messages -->
     {% if messages %}
-    <div class="row">
-        <div class="col-12">
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-6">
+            <div class="alert alert-info alert-dismissible fade show shadow-sm animate-fade-in" role="alert">
                 {% for message in messages %}
                 <p>{{ message }}</p>
                 {% endfor %}
@@ -24,10 +22,10 @@
     </div>
     {% endif %}
 
-    <!-- Search and Filters Form (Card) -->
-    <div class="row justify-content-center">
+    <!-- Search and Filters Form -->
+    <div class="row justify-content-center animate-slide-up">
         <div class="col-lg-8 col-md-10 col-sm-12">
-            <div class="card shadow-sm p-4 mb-5 border-light">
+            <div class="card shadow-sm p-4 mb-5 border-light rounded-4">
                 <form method="GET" class="row g-3" id="filter-form">
                     <div class="col-md-6">
                         <input type="text" class="form-control form-control-lg" name="search" placeholder="Search tasks..." value="{{ request.GET.search }}">
@@ -46,7 +44,7 @@
                         </select>
                     </div>
                     <div class="col-12 d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg w-100"> 
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
                             <i class="fas fa-search"></i> Search & Filter
                         </button>
                     </div>
@@ -62,79 +60,109 @@
         </a>
     </div>
 
-    <!-- Task List -->
-    <div id="task-list" class="list-group">
+    <!-- Task List with Enhanced Dropdown Menu -->
+    <div id="task-list" class="row gy-4">
         {% for task in tasks %}
-            <div id="task-{{ task.id }}" class="list-group-item card mb-3 p-4 shadow-sm border-light">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="fw-bold mb-1">{{ task.title }}</h5>
-                        <p class="mb-1 text-muted">{{ task.description }}</p>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div id="task-{{ task.id }}" class="card task-card mb-3 p-4 shadow-sm border-light rounded-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="fw-bold mb-2">{{ task.title }}</h5>
+                            <p class="mb-1 text-muted">{{ task.description }}</p>
 
-                        <!-- Priority Badge -->
-                        {% if task.priority == 'high' %}
-                            <span class="badge bg-danger">High Priority</span>
-                        {% elif task.priority == 'medium' %}
-                            <span class="badge bg-warning">Medium Priority</span>
-                        {% else %}
-                            <span class="badge bg-secondary">Low Priority</span>
-                        {% endif %}
+                            <!-- Priority Badge -->
+                            {% if task.priority == 'high' %}
+                                <span class="badge bg-danger">High Priority</span>
+                            {% elif task.priority == 'medium' %}
+                                <span class="badge bg-warning">Medium Priority</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Low Priority</span>
+                            {% endif %}
 
-                        <!-- Status Badge -->
-                        {% if task.status == 'completed' %}
-                            <span class="badge bg-success">Completed</span>
-                        {% else %}
-                            <span class="badge bg-primary">Pending</span>
-                        {% endif %}
-                    </div>
+                            <!-- Status Badge -->
+                            {% if task.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% else %}
+                                <span class="badge bg-primary">Pending</span>
+                            {% endif %}
+                        </div>
 
-                    <div class="btn-group">
-                        <!-- Mark task as completed or pending -->
-                        <a href="{% url 'task_toggle_complete' task.id %}" class="btn btn-sm {% if task.status == 'completed' %} btn-warning {% else %} btn-success {% endif %}">
-                            <i class="fas {% if task.status == 'completed' %} fa-undo {% else %} fa-check {% endif %}"></i>
-                            {% if task.status == 'completed' %} Mark as Pending {% else %} Mark as Completed {% endif %}
-                        </a>
-                        <a href="{% url 'task_edit' task.id %}" class="btn btn-sm btn-outline-warning">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <a href="{% url 'task_delete' task.id %}" class="btn btn-sm btn-outline-danger">
-                            <i class="fas fa-trash"></i> Delete
-                        </a>
-                        <a href="{% url 'convert_task_to_event' task.id %}" class="btn btn-sm btn-outline-info">
-                            <i class="fas fa-calendar-alt"></i> Convert to Event
-                        </a>
+                        <!-- Task Actions with Enhanced Dropdown -->
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Actions
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end custom-dropdown shadow">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'task_toggle_complete' task.id %}">
+                                        <i class="fas {% if task.status == 'completed' %}fa-undo{% else %}fa-check{% endif %} me-2"></i>
+                                        {% if task.status == 'completed' %}Mark as Pending{% else %}Mark as Completed{% endif %}
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'task_edit' task.id %}">
+                                        <i class="fas fa-edit me-2"></i> Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteTaskModal" data-id="{{ task.id }}">
+                                        <i class="fas fa-trash me-2"></i> Delete
+                                    </button>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'convert_task_to_event' task.id %}">
+                                        <i class="fas fa-calendar-alt me-2"></i> Convert to Event
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         {% empty %}
-            <div class="alert alert-warning text-center">No tasks available.</div>
+            <div class="col-12 text-center">
+                <div class="alert alert-warning shadow-sm">No tasks available.</div>
+            </div>
         {% endfor %}
     </div>
 </div>
 
-<!-- Loading Spinner -->
-<div id="loading-spinner" class="d-none position-fixed top-50 start-50 translate-middle">
-    <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
+<!-- Delete Task Confirmation Modal -->
+<div class="modal fade" id="deleteTaskModal" tabindex="-1" aria-labelledby="deleteTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteTaskModalLabel">Delete Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">Are you sure you want to delete this task?</div>
+            <div class="modal-footer">
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- Drag-and-Drop with SortableJS -->
 <script>
     const taskList = document.getElementById('task-list');
-    const spinner = document.getElementById('loading-spinner');
-    
-    // Show spinner while filtering
-    const filterForm = document.getElementById('filter-form');
-    filterForm.addEventListener('submit', function() {
-        spinner.classList.remove('d-none');
+    const deleteTaskModal = document.getElementById('deleteTaskModal');
+
+    // Delete modal action setup
+    deleteTaskModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const taskId = button.getAttribute('data-id');
+        deleteTaskModal.querySelector('form').action = `{% url 'task_delete' 0 %}`.replace('0', taskId);
     });
 
     // Show spinner when dragging tasks
     Sortable.create(taskList, {
         animation: 150,
         onEnd: function (evt) {
-            spinner.classList.remove('d-none');
             const taskOrder = Array.from(taskList.children).map((task, index) => {
                 return { id: task.id.split('-')[1], order: index + 1 };
             });
@@ -147,68 +175,69 @@
                     "Content-Type": "application/json",
                     "X-CSRFToken": "{{ csrf_token }}"
                 }
-            }).then(() => {
-                spinner.classList.add('d-none'); // Hide spinner after order is updated
             });
         }
     });
 </script>
 
 <style>
-/* Custom Task Card Styles */
-.card {
-    border-radius: 8px;
-    border: 1px solid #dee2e6;
-    transition: box-shadow 0.2s ease-in-out;
-}
-
-.card:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.list-group-item h5 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-}
-
-.badge {
-    margin-right: 8px;
-}
-
-.btn-group .btn {
-    margin-left: 10px;
-    transition: all 0.2s ease;
-}
-
-/* Hover Effects for Buttons */
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* Spinner */
-#loading-spinner {
-    z-index: 1050;
-}
-
-/* Alerts */
-.alert {
-    font-size: 1rem;
-    font-weight: 400;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .btn-group {
-        flex-direction: column;
-        align-items: stretch;
+    /* Task Card Style */
+    .task-card {
+        border-radius: 10px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .task-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     }
 
-    .btn-group .btn {
-        margin-bottom: 5px;
-        margin-left: 0;
+    /* Badge Style */
+    .badge {
+        margin-right: 5px;
+        font-size: 0.85rem;
     }
-}
+
+    /* Enhanced Dropdown Style */
+    .custom-dropdown .dropdown-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1.25rem;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .custom-dropdown .dropdown-item i {
+        font-size: 1.1rem;
+        color: #007bff;
+    }
+    .custom-dropdown .dropdown-item:hover {
+        background-color: #f1f1f1;
+        color: #333;
+    }
+    .custom-dropdown .dropdown-item.text-danger:hover {
+        background-color: #ffe5e5;
+        color: #dc3545;
+    }
+
+    /* Dark Mode */
+    .dark-mode .custom-dropdown .dropdown-item {
+        color: #e0e0e0;
+        background-color: #333;
+    }
+    .dark-mode .custom-dropdown .dropdown-item:hover {
+        background-color: #444;
+    }
+    .dark-mode .custom-dropdown .dropdown-item i {
+        color: #ffc107;
+    }
+
+    /* Animations */
+    .animate-fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
+    .animate-slide-up { animation: slideUp 0.8s ease forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(20px); } to { transform: translateY(0); opacity: 1; } }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .btn-group { flex-direction: column; align-items: stretch; }
+    }
 </style>
 {% endblock %}

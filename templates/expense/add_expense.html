@@ -3,20 +3,20 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <!-- Heading -->
-    <div class="row">
-        <div class="col-12 text-center mb-4">
+<div class="container my-5">
+    <!-- Page Header -->
+    <div class="row justify-content-center animate-fade-in">
+        <div class="col-lg-8 col-md-10 text-center">
             <h2 class="display-6 fw-bold text-primary">Add Expense</h2>
-            <p class="text-muted">Fill out the form below to add a new expense.</p>
+            <p class="text-muted">Easily add new expenses to track your spending.</p>
         </div>
     </div>
 
-    <!-- Display messages -->
+    <!-- Messages Section -->
     {% if messages %}
-    <div class="row">
-        <div class="col-12">
-            <div class="alert alert-info alert-dismissible fade show shadow-sm" role="alert">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="alert alert-info alert-dismissible fade show shadow-sm animate-slide-up" role="alert">
                 {% for message in messages %}
                 <p>{{ message }}</p>
                 {% endfor %}
@@ -26,24 +26,30 @@
     </div>
     {% endif %}
 
-    <!-- Add Expense Form -->
-    <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-8 col-sm-12">
-            <div class="card shadow-sm p-4 rounded-3">
+    <!-- Expense Form Section -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-6 col-md-8">
+            <div class="card shadow-lg p-4 rounded-4 animate-slide-up">
                 <form id="expense-form" method="POST">
                     {% csrf_token %}
-                    <div class="mb-3">
+
+                    <!-- Date Field -->
+                    <div class="mb-4">
                         <label for="id_date" class="form-label fw-bold">Date</label>
-                        <input type="date" id="id_date" name="date" class="form-control" required>
+                        <input type="date" id="id_date" name="date" class="form-control form-control-lg" required>
                     </div>
-                    <div class="mb-3">
+
+                    <!-- Amount Field -->
+                    <div class="mb-4">
                         <label for="id_amount" class="form-label fw-bold">Amount</label>
-                        <input type="number" id="id_amount" name="amount" class="form-control" min="0" step="0.01" required>
-                        <small class="text-muted">Amount should be positive.</small>
+                        <input type="number" id="id_amount" name="amount" class="form-control form-control-lg" min="0" step="0.01" required>
+                        <small class="text-muted">Enter a positive amount.</small>
                     </div>
-                    <div class="mb-3">
+
+                    <!-- Category Dropdown -->
+                    <div class="mb-4">
                         <label for="id_category" class="form-label fw-bold">Category</label>
-                        <select id="id_category" name="category" class="form-select" required>
+                        <select id="id_category" name="category" class="form-select form-select-lg" required>
                             <option value="" disabled selected>Select Category</option>
                             <option value="Food">Food</option>
                             <option value="Transport">Transport</option>
@@ -52,22 +58,26 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
-                    <div class="mb-3">
+
+                    <!-- Description Field -->
+                    <div class="mb-4">
                         <label for="id_description" class="form-label fw-bold">Description</label>
-                        <textarea id="id_description" name="description" class="form-control" rows="3"></textarea>
+                        <textarea id="id_description" name="description" class="form-control form-control-lg" rows="3" placeholder="Optional"></textarea>
                     </div>
+
+                    <!-- Submit Button -->
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg w-100" id="submit-btn">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm" id="submit-btn">
                             <i class="fas fa-plus-circle me-2"></i> Add Expense
                         </button>
                     </div>
-                </form>                
+                </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Inline JavaScript for button loading state -->
+<!-- Button Loading Animation Script -->
 <script>
     document.getElementById("expense-form").addEventListener("submit", function() {
         var submitButton = document.getElementById("submit-btn");
@@ -77,90 +87,74 @@
 </script>
 
 <style>
-/* Custom Styles for Responsiveness and UI Enhancements */
-h2 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 2rem;
-}
-
-.card {
-    border-radius: 10px;
-    border: 1px solid #e0e0e0;
-    padding: 2rem;
-}
-
-.form-control, .form-select {
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-size: 1rem;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    border: none;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.btn-lg {
-    padding: 0.75rem 1.25rem;
-}
-
-.alert {
-    font-size: 1rem;
-}
-
-@media (max-width: 576px) {
+    /* General Styling */
     h2 {
-        font-size: 1.5rem;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 2rem;
     }
     .card {
-        padding: 1.5rem;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        padding: 2rem;
     }
     .form-control, .form-select {
-        font-size: 0.9rem;
-    }
-    .btn-lg {
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
         font-size: 1rem;
     }
-}
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    .btn-lg {
+        padding: 0.75rem 1.25rem;
+    }
 
-/* Dark Mode Styling */
-.dark-mode .card {
-    background-color: #333;
-    border-color: #444;
-    color: #e0e0e0;
-}
+    /* Animations */
+    .animate-fade-in { animation: fadeIn 1s ease forwards; opacity: 0; }
+    .animate-slide-up { animation: slideUp 0.8s ease forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(20px); } to { transform: translateY(0); opacity: 1; } }
 
-.dark-mode .form-control, .dark-mode .form-select {
-    background-color: #444;
-    color: #e0e0e0;
-    border-color: #555;
-}
+    /* Dark Mode */
+    .dark-mode .card {
+        background-color: #333;
+        border-color: #444;
+        color: #e0e0e0;
+    }
+    .dark-mode .form-control, .dark-mode .form-select {
+        background-color: #444;
+        color: #e0e0e0;
+        border-color: #555;
+    }
+    .dark-mode .form-control::placeholder {
+        color: #ccc;
+    }
+    .dark-mode .btn-primary {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+    .dark-mode .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .dark-mode .alert-info {
+        background-color: #1a1a1a;
+        border-color: #333;
+        color: #e0e0e0;
+    }
 
-.dark-mode .form-control::placeholder {
-    color: #ccc;
-}
-
-.dark-mode .btn-primary {
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-}
-
-.dark-mode .btn-primary:hover {
-    background-color: #0056b3;
-}
-
-.dark-mode .alert-info {
-    background-color: #1a1a1a;
-    border-color: #333;
-    color: #e0e0e0;
-}
+    /* Responsive Adjustments */
+    @media (max-width: 576px) {
+        h2 { font-size: 1.5rem; }
+        .card { padding: 1.5rem; }
+        .form-control, .form-select { font-size: 0.9rem; }
+        .btn-lg { font-size: 1rem; }
+    }
 </style>
 {% endblock %}
